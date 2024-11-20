@@ -1,5 +1,6 @@
 package oBeta.PiggyWebBank.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -18,6 +19,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Setter(AccessLevel.NONE)
     private UUID id;
     private String name;
     private String surname;
@@ -36,6 +38,10 @@ public class User {
     @Setter(AccessLevel.NONE)
     private LocalDate lastPasswordUpdate;
 
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "user")
+    private Role role;
 
 
     public User(String email, String username, LocalDate lastPasswordUpdate, String password, String name, String surname) {
