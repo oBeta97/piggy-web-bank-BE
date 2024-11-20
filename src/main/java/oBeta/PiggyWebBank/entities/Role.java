@@ -18,7 +18,7 @@ public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    private Long id;
+    private long id;
 
     @Column(nullable = false, unique = true)
     private String name;
@@ -27,8 +27,8 @@ public class Role {
     @JoinColumn(name = "user_id", unique = true)
     private User user;
 
-    @OneToMany(mappedBy = "role", fetch = FetchType.EAGER)
-    private List<Feature> features;
+    @ManyToMany(mappedBy = "roleList", fetch = FetchType.EAGER)
+    private List<Feature> featureList;
 
     public Role(String name, User user) {
         this.name = name;

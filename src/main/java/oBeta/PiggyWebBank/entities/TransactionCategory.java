@@ -18,10 +18,10 @@ public class TransactionCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    private Long id;
+    private long id;
 
     @Column(nullable = false, unique = true)
-    private Long name;
+    private long name;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = true)
@@ -30,7 +30,7 @@ public class TransactionCategory {
     @Column(name = "is_expense", nullable = false)
     private Boolean isExpense;
 
-    public TransactionCategory(Long name, User user, Boolean isExpense) {
+    public TransactionCategory(long name, User user, Boolean isExpense) {
         this.name = name;
         this.user = user;
         this.isExpense = isExpense;

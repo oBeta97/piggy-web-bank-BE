@@ -16,13 +16,13 @@ public class MonthHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    private Long id;
+    private long id;
 
     @Column(nullable = false)
-    private Long month;
+    private long month;
 
     @Column(nullable = false)
-    private Long year;
+    private long year;
 
     @Column(nullable = false)
     private Double available;
@@ -47,7 +47,7 @@ public class MonthHistory {
     private User user;
 
 
-    public MonthHistory(Long month, Long year, Double available, Double earnings, Double expenses, Double savings, Double minimumSavings, Double totSavings, User user) {
+    public MonthHistory(long month, long year, Double available, Double earnings, Double expenses, Double savings, Double minimumSavings, Double totSavings, User user) {
         this.month = month;
         this.year = year;
         this.available = available;

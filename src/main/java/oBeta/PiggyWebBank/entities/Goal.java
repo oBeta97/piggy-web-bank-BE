@@ -18,7 +18,7 @@ public class Goal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    private Long id;
+    private long id;
 
     @Column(name = "goal_dt", nullable = false)
     private LocalDate goalDt;

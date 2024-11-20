@@ -17,7 +17,7 @@ public class UserCharacteristic {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    private Long id;
+    private long id;
 
     @Column(nullable = false)
     private String avatar;
