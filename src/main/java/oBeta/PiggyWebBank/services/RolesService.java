@@ -4,7 +4,6 @@ import oBeta.PiggyWebBank.entities.Feature;
 import oBeta.PiggyWebBank.entities.Role;
 import oBeta.PiggyWebBank.exceptions.BadRequestException;
 import oBeta.PiggyWebBank.exceptions.NotFoundException;
-import oBeta.PiggyWebBank.payloads.FeatureDTO;
 import oBeta.PiggyWebBank.payloads.RoleDTO;
 import oBeta.PiggyWebBank.repositories.RolesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
