@@ -23,15 +23,11 @@ public class Role {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @OneToOne
-    @JoinColumn(name = "user_id", unique = true)
-    private User user;
-
     @ManyToMany(mappedBy = "roleList", fetch = FetchType.EAGER)
     private List<Feature> featureList;
 
-    public Role(String name, User user) {
+    public Role(String name, List<Feature> featureList) {
         this.name = name;
-        this.user = user;
+        this.featureList = featureList;
     }
 }

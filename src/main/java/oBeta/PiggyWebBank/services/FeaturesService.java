@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -37,6 +38,17 @@ public class FeaturesService {
                 .orElseThrow(() ->
                         new NotFoundException("Feature with id " + idToFind + " not found!")
                 );
+    }
+
+    public List<Feature> getFeaturesByList(List<Long> idList){
+
+        List<Feature> res = new ArrayList<>();
+
+        for (long idToFind : idList){
+            res.add(this.getFeatureById(idToFind));
+        }
+
+        return res;
     }
 
     public Feature saveNewFeature(FeatureDTO featureDTO){

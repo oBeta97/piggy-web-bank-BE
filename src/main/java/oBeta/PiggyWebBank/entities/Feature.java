@@ -1,5 +1,6 @@
 package oBeta.PiggyWebBank.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -22,9 +23,10 @@ public class Feature {
     @Column(nullable = false, unique = true)
     private String  name;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
-            name = "Roles_features",
+            name = "roles_features",
             joinColumns = @JoinColumn(name = "feature_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )

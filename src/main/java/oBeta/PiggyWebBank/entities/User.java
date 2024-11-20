@@ -38,9 +38,9 @@ public class User {
     @Setter(AccessLevel.NONE)
     private LocalDate lastPasswordUpdate;
 
-
     @JsonIgnore
-    @OneToOne(mappedBy = "user")
+    @ManyToOne
+    @JoinColumn(name = "role_id")
     private Role role;
 
 
