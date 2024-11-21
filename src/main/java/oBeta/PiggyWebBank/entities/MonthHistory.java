@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import oBeta.PiggyWebBank.builders.MonthHistoryBuilder;
 
 @Entity
 @Table(name = "month_history")
@@ -15,7 +16,6 @@ public class MonthHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE)
     private long id;
 
     @Column(nullable = false)
@@ -26,32 +26,32 @@ public class MonthHistory {
 
     @Column(nullable = false)
     @Setter(AccessLevel.NONE)
-    private Double available;
+    private double available;
 
     @Column(nullable = false)
     @Setter(AccessLevel.NONE)
-    private Double earnings;
+    private double earnings;
 
     @Column(nullable = false)
     @Setter(AccessLevel.NONE)
-    private Double expenses;
+    private double expenses;
 
     @Column(nullable = false)
     @Setter(AccessLevel.NONE)
-    private Double savings;
+    private double savings;
 
     @Column(name = "minimum_savings", nullable = false)
-    private Double minimumSavings;
+    private double minimumSavings;
 
     @Column(name = "tot_savings", nullable = false)
-    private Double totSavings;
+    private double totSavings;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
 
-    public MonthHistory(long month, long year, Double available, Double earnings, Double expenses, Double minimumSavings, Double totSavings, User user) {
+    public MonthHistory(long month, long year, double available, double earnings, double expenses, double minimumSavings, double totSavings, User user) {
         this.month = month;
         this.year = year;
         this.available = available;
@@ -73,6 +73,18 @@ public class MonthHistory {
         this.minimumSavings = 0.0;
         this.totSavings = 0.0;
         this.user = user;
+    }
+
+    public MonthHistory(MonthHistoryBuilder builder){
+        this.month = builder.getMonth();
+        this.year = builder.getYear();
+        this.available = builder.getAvailable();
+        this.earnings = builder.getEarnings();
+        this.expenses = builder.getExpenses();
+        this.savings = builder.getSavings();
+        this.minimumSavings = builder.getMinimumSavings();
+        this.totSavings = builder.getTotSavings();
+        this.user = builder.getUser();
     }
 
     public void updateSavings(){

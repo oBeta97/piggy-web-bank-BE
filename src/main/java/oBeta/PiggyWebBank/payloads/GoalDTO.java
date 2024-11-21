@@ -13,7 +13,7 @@ public record GoalDTO(
         @NotNull(message = "Period must be set!")
         Short period,
         @NotNull(message = "Amount must be set!")
-        Double amount,
+        double amount,
         @NotNull(message = "User UUID must be set!")
         UUID user_id
 ) {}

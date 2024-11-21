@@ -14,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class VariableTransactionsService {
     @Autowired
@@ -24,6 +26,9 @@ public class VariableTransactionsService {
 
     @Autowired
     private TransactionCategoriesService transactionCategoriesService;
+
+    @Autowired
+    private MonthHistoriesService monthHistoriesService;
 
     public Page<VariableTransaction> getAllVariableTransactions(int page, int size, String sortBy) {
         if(size > 50) size = 50;
@@ -39,14 +44,27 @@ public class VariableTransactionsService {
                 );
     }
 
+    public List<VariableTransaction> getVariableEarningsByUserOfThisMonth(User user){
+        return this.variableTransactionsRepo.findVariableEarningsByUserOfThisMonth(user);
+    }
+
+    public List<VariableTransaction> getVariableExpensesByUSerOfThisMonth(User user){
+        return this.variableTransactionsRepo.findVariableExpensesByUserOfThisMonth(user);
+    }
+
+
     public VariableTransaction saveNewVariableTransaction(VariableTransactionDTO dto){
 
         User user = this.userService.getUserById(dto.user_id());
         TransactionCategory transactionCategory = this.transactionCategoriesService.getTransactionCategoryById(dto.transactionCategory_id());
 
-        return this.variableTransactionsRepo.save(
+        VariableTransaction res = this.variableTransactionsRepo.save(
                 new VariableTransaction(dto, transactionCategory, user)
         );
+
+        monthHistoriesService.reloadLastMonthHistoty(user);
+
+        return res;
     }
 
     public VariableTransaction updateVariableTransaction(long idToUpdate, VariableTransactionDTO dto){

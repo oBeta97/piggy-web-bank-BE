@@ -24,11 +24,27 @@ public class FixedTransactionsService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private MonthHistoriesService monthHistoriesService;
+
     public Page<FixedTransaction> getAllFixedTransactions(int page, int size, String sortBy) {
         if(size > 50) size = 50;
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         return this.fixedTransactionsRepo.findAll(pageable);
+    }
+
+    public List<FixedTransaction> getAllUserFixedTransactions(User user){
+        return this.fixedTransactionsRepo.findByUser(user);
+    }
+
+
+    public List<FixedTransaction> getFixedEarningsByUser(User user){
+        return this.fixedTransactionsRepo.findFixedEarningByUser(user);
+    }
+
+    public List<FixedTransaction> getFixedExpensesByUSer(User user){
+        return this.fixedTransactionsRepo.findFixedExpensesByUser(user);
     }
 
     public FixedTransaction getFixedTransactionById(long idToFind){
@@ -41,10 +57,14 @@ public class FixedTransactionsService {
     public FixedTransaction saveNewFixedTransaction(FixedTransactionDTO dto){
 
         User user = this.userService.getUserById(dto.user_id());
-
-        return this.fixedTransactionsRepo.save(
+        FixedTransaction res =  this.fixedTransactionsRepo.save(
                 new FixedTransaction(dto, user)
         );
+
+        // After save on fixed transaction the month history will be reloaded
+        this.monthHistoriesService.reloadLastMonthHistoty(user);
+
+        return res;
     }
 
     public FixedTransaction updateFixedTransaction(long idToUpdate, FixedTransactionDTO dto){

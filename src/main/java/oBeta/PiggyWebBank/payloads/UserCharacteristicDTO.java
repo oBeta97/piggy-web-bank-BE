@@ -15,7 +15,7 @@ public record UserCharacteristicDTO(
         @NotEmpty(message = "Currency must be set!")
         String currency,
         @NotNull(message = "Minimum Savings must be set!")
-        Double minimumSavings,
+        double minimumSavings,
         @NotNull(message = "User UUID must be set!")
         UUID user_id
 ) {

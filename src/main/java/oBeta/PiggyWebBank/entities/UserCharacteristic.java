@@ -26,19 +26,19 @@ public class UserCharacteristic {
     private String currency;
 
     @Column(nullable = false, name = "daily_amount")
-    private Double dailyAmount;
+    private double dailyAmount;
 
     @Column(nullable = false, name = "today_amount")
-    private Double todayAmount;
+    private double todayAmount;
 
     @Column(nullable = false, name = "minimum_savings")
-    private Double minimumSavings;
+    private double minimumSavings;
 
     @OneToOne
     @JoinColumn(name = "user_id", unique = true)
     private User user;
 
-    public UserCharacteristic(String avatar, String currency, Double dailyAmount, Double todayAmount, Double minimumSavings, User user) {
+    public UserCharacteristic(String avatar, String currency, double dailyAmount, double todayAmount, double minimumSavings, User user) {
         this.avatar = avatar;
         this.currency = currency;
         this.dailyAmount = dailyAmount;

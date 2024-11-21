@@ -24,7 +24,7 @@ public class VariableTransaction extends Transaction{
     @JoinColumn(name = "category_id")
     private TransactionCategory transactionCategory;
     
-    public VariableTransaction(String name, Double amount, LocalDateTime transactionDt, TransactionCategory transactionCategory, User user) {
+    public VariableTransaction(String name, double amount, LocalDateTime transactionDt, TransactionCategory transactionCategory, User user) {
         super(name, amount, user);
         this.transactionDt = transactionDt;
         this.transactionCategory = transactionCategory;

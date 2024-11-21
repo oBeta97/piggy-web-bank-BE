@@ -23,6 +23,9 @@ public class GoalsService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private MonthHistoriesService monthHistoriesService;
+
     public Page<Goal> getAllGoals (int page, int size, String sortBy){
         if(size > 50) size = 50;
 
@@ -42,9 +45,13 @@ public class GoalsService {
     public Goal saveNewGoal(GoalDTO dto){
         User user = this.userService.getUserById(dto.user_id());
 
-        return this.goalsRepo.save(
+        Goal res = this.goalsRepo.save(
                 new Goal(dto, user)
         );
+
+        this.monthHistoriesService.reloadLastMonthHistoty(user);
+
+        return res;
     }
 
     public Goal updateGoal(long idToUpdate, GoalDTO dto){

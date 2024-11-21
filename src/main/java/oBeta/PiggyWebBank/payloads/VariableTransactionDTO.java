@@ -11,7 +11,7 @@ public record VariableTransactionDTO(
         @NotEmpty(message = "Name name must be set!")
         String name,
         @NotNull(message = "Amount must be set!")
-        Double amount,
+        double amount,
         @NotNull(message = "Transaction dt must be set!")
         @PastOrPresent(message = "Transaction can't be in the future")
         LocalDateTime transactionDt,

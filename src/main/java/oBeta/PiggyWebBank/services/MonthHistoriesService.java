@@ -1,7 +1,7 @@
 package oBeta.PiggyWebBank.services;
 
+import oBeta.PiggyWebBank.builders.MonthHistoryBuilder;
 import oBeta.PiggyWebBank.entities.MonthHistory;
-import oBeta.PiggyWebBank.entities.Role;
 import oBeta.PiggyWebBank.entities.User;
 import oBeta.PiggyWebBank.exceptions.BadRequestException;
 import oBeta.PiggyWebBank.exceptions.NotFoundException;
@@ -26,6 +26,12 @@ public class MonthHistoriesService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private MonthHistoryBuilder monthHistoryBuilder;
+
+    @Autowired
+    private UserCharacteristicsService userCharacteristicsService;
 
     public Page<MonthHistory> getAllMonthHistory(int page, int size, String sortBy) {
         if(size > 50) size = 50;
@@ -54,6 +60,21 @@ public class MonthHistoriesService {
         return this.monthHistoriesRepo.save(new MonthHistory(actualDate.getMonthValue(), actualDate.getYear(), user));
     }
 
+    public void reloadLastMonthHistoty(User user){
+
+        MonthHistory lastMonthHistory = this.monthHistoriesRepo.findFirstByUserOrderByIdDesc(user);
+
+        MonthHistory updatedMonth = this.monthHistoryBuilder.buildNewMonth(lastMonthHistory.getYear(), lastMonthHistory.getMonth(), lastMonthHistory.getUser());
+        updatedMonth.setId(lastMonthHistory.getId());
+
+        this.monthHistoriesRepo.save(updatedMonth);
+
+        if(updatedMonth.getAvailable() != lastMonthHistory.getAvailable())
+            this.userCharacteristicsService.updateUserCharacteristicDailyAmount(user,updatedMonth.getAvailable());
+
+        if(updatedMonth.getSavings() != lastMonthHistory.getSavings())
+            this.userCharacteristicsService.updatUserCharacteristicTodayAmount(user, updatedMonth.getEarnings() + updatedMonth.getExpenses());
+    }
 
     // DELETE of the older data than a specific date
     public void deleteMonthHistoryByDate (long year, long month, User user){
