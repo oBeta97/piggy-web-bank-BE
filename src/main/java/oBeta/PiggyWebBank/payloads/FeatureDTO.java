@@ -9,5 +9,6 @@ public record FeatureDTO(
         @NotEmpty(message = "Feature name must be set!")
         String name,
         @NotNull(message = "Role id must be set!")
+        // it can be empty list cause a feature initially is not linked to a role
         List<Long> roleList
 ) {}

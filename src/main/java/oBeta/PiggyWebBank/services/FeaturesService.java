@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -66,6 +67,13 @@ public class FeaturesService {
     public Feature updateFeature (long idToUpdate, FeatureDTO featureDTO){
 
         Feature found = this.getFeatureById(idToUpdate);
+
+        this.featuresRepo.findByName(featureDTO.name())
+            .ifPresent( feature -> {
+                if(feature.getId() != idToUpdate)
+                    throw new BadRequestException("Feature with name " + feature.getName() + " already exist!");
+            }
+        );
 
         found.setName(featureDTO.name());
         List<Role> roleList = this.rolesService.getRolesByList(featureDTO.roleList());
