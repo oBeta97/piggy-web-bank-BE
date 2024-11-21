@@ -55,7 +55,7 @@ public class RolesService {
                     throw new BadRequestException("Role with name " + feature.getName() + " already exist!");
                 });
 
-        List<Feature> featureList = this.featuresService.getFeaturesByList(roleDTO.roleList());
+        List<Feature> featureList = this.featuresService.getFeaturesByList(roleDTO.featureList());
 
         return this.rolesRepo.save(new Role(roleDTO.name(), featureList));
     }
@@ -64,15 +64,20 @@ public class RolesService {
 
         Role found = this.getRoleById(idToUpdate);
 
+        this.rolesRepo.findByName(roleDTO.name()).ifPresent(role ->{
+            if(role.getId() != idToUpdate)
+                throw new BadRequestException("Role with name " + role.getName() + " already exist!");
+        });
+
         found.setName(roleDTO.name());
 
-        List<Feature> featureList = this.featuresService.getFeaturesByList(roleDTO.roleList());
+        List<Feature> featureList = this.featuresService.getFeaturesByList(roleDTO.featureList());
         found.setFeatureList(featureList);
 
         return this.rolesRepo.save(found);
     }
 
-    public void deleteFeature (long idToDelete){
+    public void deleteRole(long idToDelete){
         this.rolesRepo.delete(
                 this.getRoleById(idToDelete)
         );
