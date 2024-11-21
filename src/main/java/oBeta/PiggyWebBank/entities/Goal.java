@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import oBeta.PiggyWebBank.payloads.GoalDTO;
 
 import java.time.LocalDate;
 
@@ -18,7 +19,7 @@ public class Goal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    private Long id;
+    private long id;
 
     @Column(name = "goal_dt", nullable = false)
     private LocalDate goalDt;
@@ -27,6 +28,7 @@ public class Goal {
     private String name;
 
     @Column(nullable = false)
+    @Setter(AccessLevel.NONE)
     private Short period;
 
     @Column(nullable = false)
@@ -52,4 +54,20 @@ public class Goal {
         this.experityDt = experityDt;
         this.user = user;
     }
+
+    public Goal(GoalDTO dto, User user){
+        this.goalDt = LocalDate.now();
+        this.name = dto.name();
+        this.period = dto.period();
+        this.amount = dto.amount();
+        this.installment = dto.amount() / dto.period();
+        this.experityDt = LocalDate.now().plusMonths(dto.period());
+        this.user = user;
+    }
+
+    public void setPeriod(short period){
+        this.period = period;
+        this.experityDt = this.goalDt.plusMonths(period);
+    }
+
 }

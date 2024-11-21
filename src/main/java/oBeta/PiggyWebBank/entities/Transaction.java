@@ -17,7 +17,7 @@ public abstract class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    private Long id;
+    private long id;
 
     @Column(nullable = false)
     private String name;
@@ -30,8 +30,9 @@ public abstract class Transaction {
     private User user;
 
 
-    public Transaction(String name, Double amount) {
+    public Transaction(String name, Double amount, User user) {
         this.name = name;
         this.amount = amount;
+        this.user = user;
     }
 }
