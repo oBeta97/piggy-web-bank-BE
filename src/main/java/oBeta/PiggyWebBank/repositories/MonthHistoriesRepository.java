@@ -18,7 +18,7 @@ public interface MonthHistoriesRepository extends JpaRepository<MonthHistory, Lo
     @Query("SELECT mh " +
             "FROM MonthHistory mh " +
             "WHERE " +
-                "mh.User = :user " +
+                "mh.user = :user " +
                 "AND (" +
                     "mh.year < :year OR mh.year = :year AND mh.month < :month" +
                 ")"

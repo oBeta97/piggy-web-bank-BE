@@ -30,8 +30,9 @@ public abstract class Transaction {
     private User user;
 
 
-    public Transaction(String name, Double amount) {
+    public Transaction(String name, Double amount, User user) {
         this.name = name;
         this.amount = amount;
+        this.user = user;
     }
 }
