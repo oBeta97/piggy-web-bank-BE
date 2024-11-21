@@ -31,6 +31,19 @@ public class FixedTransactionsService {
         return this.fixedTransactionsRepo.findAll(pageable);
     }
 
+    public List<FixedTransaction> getAllUserFixedTransactions(User user){
+        return this.fixedTransactionsRepo.findByUser(user);
+    }
+
+
+    public List<FixedTransaction> getFixedEarningsByUser(User user){
+        return this.fixedTransactionsRepo.findFixedEarningByUser(user);
+    }
+
+    public List<FixedTransaction> getFixedExpensesByUSer(User user){
+        return this.fixedTransactionsRepo.findFixedExpensesByUser(user);
+    }
+
     public FixedTransaction getFixedTransactionById(long idToFind){
         return this.fixedTransactionsRepo.findById(idToFind)
                 .orElseThrow(() ->

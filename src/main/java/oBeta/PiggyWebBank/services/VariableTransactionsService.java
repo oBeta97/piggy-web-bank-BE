@@ -1,5 +1,6 @@
 package oBeta.PiggyWebBank.services;
 
+import oBeta.PiggyWebBank.entities.FixedTransaction;
 import oBeta.PiggyWebBank.entities.TransactionCategory;
 import oBeta.PiggyWebBank.entities.VariableTransaction;
 import oBeta.PiggyWebBank.entities.User;
@@ -13,6 +14,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class VariableTransactionsService {
@@ -38,6 +41,15 @@ public class VariableTransactionsService {
                         new NotFoundException("Fixed transaction with id " + idToFind + " not found!")
                 );
     }
+
+    public List<VariableTransaction> getVariableEarningsByUser(User user){
+        return this.variableTransactionsRepo.findVariableEarningsByUser(user);
+    }
+
+    public List<VariableTransaction> getVariableExpensesByUSer(User user){
+        return this.variableTransactionsRepo.findVariableExpensesByUser(user);
+    }
+
 
     public VariableTransaction saveNewVariableTransaction(VariableTransactionDTO dto){
 

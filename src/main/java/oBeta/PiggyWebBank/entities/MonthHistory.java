@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import oBeta.PiggyWebBank.builders.MonthHistoryBuilder;
 
 @Entity
 @Table(name = "month_history")
@@ -73,6 +74,18 @@ public class MonthHistory {
         this.minimumSavings = 0.0;
         this.totSavings = 0.0;
         this.user = user;
+    }
+
+    public MonthHistory(MonthHistoryBuilder builder){
+        this.month = builder.getMonth();
+        this.year = builder.getYear();
+        this.available = builder.getAvailable();
+        this.earnings = builder.getEarnings();
+        this.expenses = builder.getExpenses();
+        this.savings = builder.getSavings();
+        this.minimumSavings = builder.getMinimumSavings();
+        this.totSavings = builder.getTotSavings();
+        this.user = builder.getUser();
     }
 
     public void updateSavings(){

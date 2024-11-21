@@ -13,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Service
 public class UserCharacteristicsService {
 
@@ -59,6 +61,16 @@ public class UserCharacteristicsService {
 
         return this.userCharacteristcsRepo.save(found);
 
+    }
+
+    public UserCharacteristic updateUserCharacteristicDailyAmount(User user, double available){
+        User u = this.userService.getUserById(user.getId());
+
+        UserCharacteristic found = this.getUserCharacteristicByUser(user);
+
+        found.setDailyAmount(available/ LocalDate.now().lengthOfMonth());
+
+        return this.userCharacteristcsRepo.save(found);
     }
 
     // This method will be run ONLY when a user will be deleted!
