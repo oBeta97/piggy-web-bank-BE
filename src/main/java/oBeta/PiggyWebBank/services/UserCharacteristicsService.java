@@ -2,10 +2,9 @@ package oBeta.PiggyWebBank.services;
 
 import oBeta.PiggyWebBank.entities.User;
 import oBeta.PiggyWebBank.entities.UserCharacteristic;
-import oBeta.PiggyWebBank.entities.UserCharacteristic;
 import oBeta.PiggyWebBank.exceptions.NotFoundException;
 import oBeta.PiggyWebBank.payloads.UserCharacteristicDTO;
-import oBeta.PiggyWebBank.repositories.UserCharacteristcsRepository;
+import oBeta.PiggyWebBank.repositories.UserCharacteristicsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,7 +18,7 @@ import java.time.LocalDate;
 public class UserCharacteristicsService {
 
     @Autowired
-    private UserCharacteristcsRepository userCharacteristcsRepo;
+    private UserCharacteristicsRepository userCharacteristicsRepo;
 
     @Autowired
     private UserService userService;
@@ -31,23 +30,23 @@ public class UserCharacteristicsService {
         if(size > 50) size = 50;
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
-        return this.userCharacteristcsRepo.findAll(pageable);
+        return this.userCharacteristicsRepo.findAll(pageable);
     }
 
     public UserCharacteristic getUserCharacteristicById (long idToFind){
-        return this.userCharacteristcsRepo.findById(idToFind)
+        return this.userCharacteristicsRepo.findById(idToFind)
                 .orElseThrow(() -> new NotFoundException("UserCharacteristic with id " + idToFind + " not found!" ));
     }
 
     public UserCharacteristic getUserCharacteristicByUser (User user){
-        return this.userCharacteristcsRepo.findByUser(user)
+        return this.userCharacteristicsRepo.findByUser(user)
                 .orElseThrow(() -> new NotFoundException("UserCharacteristic of the user " + user.getUsername() + " not found!" ));
     }
 
     // This method will be used ONLY on signIn, so every data will be 0
     // and updated later with the triggers
     public UserCharacteristic saveNewUserCharacteristic (String currency, User user){
-        return this.userCharacteristcsRepo.save(
+        return this.userCharacteristicsRepo.save(
           new UserCharacteristic(currency, user)
         );
     }
@@ -64,7 +63,7 @@ public class UserCharacteristicsService {
         found.setCurrency(dto.currency());
         found.setMinimumSavings(dto.minimumSavings());
 
-        UserCharacteristic res = this.userCharacteristcsRepo.save(found);
+        UserCharacteristic res = this.userCharacteristicsRepo.save(found);
 
         if(oldMinimumSaving != dto.minimumSavings())
             this.monthHistoriesService.reloadLastMonthHistoty(user);
@@ -80,7 +79,7 @@ public class UserCharacteristicsService {
 
         found.setDailyAmount(available/ LocalDate.now().lengthOfMonth());
 
-        return this.userCharacteristcsRepo.save(found);
+        return this.userCharacteristicsRepo.save(found);
     }
 
     public UserCharacteristic updatUserCharacteristicTodayAmount(User user, double summedTransaction){
@@ -90,7 +89,7 @@ public class UserCharacteristicsService {
 
         found.setTodayAmount(summedTransaction + found.getDailyAmount() * LocalDate.now().getDayOfMonth());
 
-        return this.userCharacteristcsRepo.save(found);
+        return this.userCharacteristicsRepo.save(found);
 
     }
 
@@ -100,7 +99,7 @@ public class UserCharacteristicsService {
 
         UserCharacteristic found = this.getUserCharacteristicByUser(u);
 
-        this.userCharacteristcsRepo.delete(found);
+        this.userCharacteristicsRepo.delete(found);
     }
 
 
