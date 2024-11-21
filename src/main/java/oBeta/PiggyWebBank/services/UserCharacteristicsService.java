@@ -24,6 +24,9 @@ public class UserCharacteristicsService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private MonthHistoriesService monthHistoriesService;
+
     public Page<UserCharacteristic> getAllUserCharacteristics (int page, int size, String sortBy){
         if(size > 50) size = 50;
 
@@ -55,22 +58,40 @@ public class UserCharacteristicsService {
 
         UserCharacteristic found = this.getUserCharacteristicByUser(user);
 
+        double oldMinimumSaving = found.getMinimumSavings();
+
         found.setAvatar(dto.avatar());
         found.setCurrency(dto.currency());
         found.setMinimumSavings(dto.minimumSavings());
 
-        return this.userCharacteristcsRepo.save(found);
+        UserCharacteristic res = this.userCharacteristcsRepo.save(found);
+
+        if(oldMinimumSaving != dto.minimumSavings())
+            this.monthHistoriesService.reloadLastMonthHistoty(user);
+
+        return res;
 
     }
 
     public UserCharacteristic updateUserCharacteristicDailyAmount(User user, double available){
         User u = this.userService.getUserById(user.getId());
 
-        UserCharacteristic found = this.getUserCharacteristicByUser(user);
+        UserCharacteristic found = this.getUserCharacteristicByUser(u);
 
         found.setDailyAmount(available/ LocalDate.now().lengthOfMonth());
 
         return this.userCharacteristcsRepo.save(found);
+    }
+
+    public UserCharacteristic updatUserCharacteristicTodayAmount(User user, double summedTransaction){
+        User u = this.userService.getUserById(user.getId());
+
+        UserCharacteristic found = this.getUserCharacteristicByUser(u);
+
+        found.setTodayAmount(summedTransaction + found.getDailyAmount() * LocalDate.now().getDayOfMonth());
+
+        return this.userCharacteristcsRepo.save(found);
+
     }
 
     // This method will be run ONLY when a user will be deleted!

@@ -17,7 +17,7 @@ public class FixedTransaction extends Transaction{
     @Column(nullable = false)
     private short period;
 
-    public FixedTransaction(String name, Double amount, short period, User user) {
+    public FixedTransaction(String name, double amount, short period, User user) {
         super(name, amount, user);
         this.period = period;
     }

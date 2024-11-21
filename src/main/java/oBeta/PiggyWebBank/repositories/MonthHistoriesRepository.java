@@ -28,5 +28,7 @@ public interface MonthHistoriesRepository extends JpaRepository<MonthHistory, Lo
     @Query("DELETE FROM MonthHistory mh WHERE mh.id IN :ids")
     int deleteByIds(List<Long> ids);
 
+    MonthHistory findFirstByUserOrderByIdDesc(User user);
+
 
 }

@@ -23,14 +23,14 @@ public abstract class Transaction {
     private String name;
 
     @Column(nullable = false)
-    private Double amount;
+    private double amount;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
 
-    public Transaction(String name, Double amount, User user) {
+    public Transaction(String name, double amount, User user) {
         this.name = name;
         this.amount = amount;
         this.user = user;

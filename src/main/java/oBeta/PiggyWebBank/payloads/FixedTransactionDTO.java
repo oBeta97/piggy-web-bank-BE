@@ -9,7 +9,7 @@ public record FixedTransactionDTO(
         @NotEmpty(message = "Name name must be set!")
         String name,
         @NotNull(message = "Amount must be set!")
-        Double amount,
+        double amount,
         @NotNull(message = "Period must be set!")
         short period,
         @NotNull(message = "User id must be set!")

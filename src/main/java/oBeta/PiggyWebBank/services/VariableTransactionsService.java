@@ -1,6 +1,5 @@
 package oBeta.PiggyWebBank.services;
 
-import oBeta.PiggyWebBank.entities.FixedTransaction;
 import oBeta.PiggyWebBank.entities.TransactionCategory;
 import oBeta.PiggyWebBank.entities.VariableTransaction;
 import oBeta.PiggyWebBank.entities.User;
@@ -28,6 +27,9 @@ public class VariableTransactionsService {
     @Autowired
     private TransactionCategoriesService transactionCategoriesService;
 
+    @Autowired
+    private MonthHistoriesService monthHistoriesService;
+
     public Page<VariableTransaction> getAllVariableTransactions(int page, int size, String sortBy) {
         if(size > 50) size = 50;
 
@@ -42,12 +44,12 @@ public class VariableTransactionsService {
                 );
     }
 
-    public List<VariableTransaction> getVariableEarningsByUser(User user){
-        return this.variableTransactionsRepo.findVariableEarningsByUser(user);
+    public List<VariableTransaction> getVariableEarningsByUserOfThisMonth(User user){
+        return this.variableTransactionsRepo.findVariableEarningsByUserOfThisMonth(user);
     }
 
-    public List<VariableTransaction> getVariableExpensesByUSer(User user){
-        return this.variableTransactionsRepo.findVariableExpensesByUser(user);
+    public List<VariableTransaction> getVariableExpensesByUSerOfThisMonth(User user){
+        return this.variableTransactionsRepo.findVariableExpensesByUserOfThisMonth(user);
     }
 
 
@@ -56,9 +58,13 @@ public class VariableTransactionsService {
         User user = this.userService.getUserById(dto.user_id());
         TransactionCategory transactionCategory = this.transactionCategoriesService.getTransactionCategoryById(dto.transactionCategory_id());
 
-        return this.variableTransactionsRepo.save(
+        VariableTransaction res = this.variableTransactionsRepo.save(
                 new VariableTransaction(dto, transactionCategory, user)
         );
+
+        monthHistoriesService.reloadLastMonthHistoty(user);
+
+        return res;
     }
 
     public VariableTransaction updateVariableTransaction(long idToUpdate, VariableTransactionDTO dto){

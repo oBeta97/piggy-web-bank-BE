@@ -18,12 +18,12 @@ public class MonthHistoryBuilder {
     private long month;
     @Setter
     private long year;
-    private Double available;
-    private Double earnings;
-    private Double expenses;
-    private Double savings;
-    private Double minimumSavings;
-    private Double totSavings;
+    private double available;
+    private double earnings;
+    private double expenses;
+    private double savings;
+    private double minimumSavings;
+    private double totSavings;
     @Setter
     private User user;
 
@@ -57,8 +57,8 @@ public class MonthHistoryBuilder {
         List<FixedTransaction> fixedTransactionList = this.fixedTransactionsService.getAllUserFixedTransactions(this.user);
         List<Goal> goalList = this.goalsService.getGoalsByUser(this.user);
 
-        Double availableCash = fixedTransactionList.stream().mapToDouble(Transaction::getAmount).sum();
-        Double availableFromGoals = goalList.stream().mapToDouble(Goal::getInstallment).sum();
+        double availableCash = fixedTransactionList.stream().mapToDouble(Transaction::getAmount).sum();
+        double availableFromGoals = goalList.stream().mapToDouble(Goal::getInstallment).sum();
 
         this.available = availableCash + availableFromGoals - this.minimumSavings;
         this.userCharacteristicsService.updateUserCharacteristicDailyAmount(this.user, this.available);
@@ -66,7 +66,7 @@ public class MonthHistoryBuilder {
 
     private void setEarnings(){
         this.earnings = this.variableTransactionsService.
-                getVariableEarningsByUser(this.user).
+                getVariableEarningsByUserOfThisMonth(this.user).
                 stream().
                 mapToDouble(Transaction::getAmount).
                 sum();
@@ -74,7 +74,7 @@ public class MonthHistoryBuilder {
 
     private void setExpenses(){
         this.expenses = this.variableTransactionsService.
-                getVariableExpensesByUSer(this.user).
+                getVariableExpensesByUSerOfThisMonth(this.user).
                 stream().
                 mapToDouble(Transaction::getAmount).
                 sum();

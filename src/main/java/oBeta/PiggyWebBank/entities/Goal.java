@@ -32,10 +32,10 @@ public class Goal {
     private Short period;
 
     @Column(nullable = false)
-    private Double amount;
+    private double amount;
 
     @Column(nullable = false)
-    private Double installment;
+    private double installment;
 
     @Column(name = "experity_dt", nullable = false)
     private LocalDate experityDt;
@@ -45,7 +45,7 @@ public class Goal {
     private User user;
 
 
-    public Goal(LocalDate goalDt, String name, Short period, Double amount, Double installment, LocalDate experityDt, User user) {
+    public Goal(LocalDate goalDt, String name, Short period, double amount, double installment, LocalDate experityDt, User user) {
         this.goalDt = goalDt;
         this.name = name;
         this.period = period;
