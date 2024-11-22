@@ -40,6 +40,7 @@ public class User {
     @Setter(AccessLevel.NONE)
     private LocalDate lastPasswordUpdate;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     private Role role;

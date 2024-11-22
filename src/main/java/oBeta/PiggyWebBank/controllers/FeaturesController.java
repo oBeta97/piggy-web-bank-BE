@@ -56,10 +56,7 @@ public class FeaturesController {
             throw new BadRequestException(message);
         }
 
-
-
         return this.featuresService.updateFeature(featureId, body);
-
     }
 
     @DeleteMapping("/{featureId}")

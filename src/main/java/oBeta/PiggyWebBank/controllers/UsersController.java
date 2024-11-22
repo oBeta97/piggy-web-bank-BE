@@ -1,10 +1,12 @@
 package oBeta.PiggyWebBank.controllers;
 
-import oBeta.PiggyWebBank.entities.User;
+import oBeta.PiggyWebBank.entities.*;
 import oBeta.PiggyWebBank.entities.User;
 import oBeta.PiggyWebBank.exceptions.BadRequestException;
 import oBeta.PiggyWebBank.payloads.UserDTO;
 import oBeta.PiggyWebBank.payloads.UserDTO;
+import oBeta.PiggyWebBank.services.MonthHistoriesService;
+import oBeta.PiggyWebBank.services.UserCharacteristicsService;
 import oBeta.PiggyWebBank.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,6 +25,12 @@ public class UsersController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private MonthHistoriesService monthHistoriesService;
+
+    @Autowired
+    private UserCharacteristicsService userCharacteristicsService;
+
     @GetMapping
     public Page<User> getAllUsers(
             @RequestParam(defaultValue = "0") int page,
@@ -37,6 +45,13 @@ public class UsersController {
         return this.userService.getUserById(userId);
     }
 
+    @GetMapping("/{userId}/role")
+    public Role getUserRole(@PathVariable UUID userId){
+        User u = this.userService.getUserById(userId);
+        return u.getRole();
+    }
+
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     //ADMIN can create new users
@@ -47,7 +62,12 @@ public class UsersController {
             throw new BadRequestException(message);
         }
 
-        return this.userService.saveNewUser(body);
+        User res = this.userService.saveNewUser(body);
+
+        this.userCharacteristicsService.saveNewUserCharacteristic("€", res);
+        this.monthHistoriesService.saveNewMonthHistory(res);
+
+        return res;
     }
 
 
