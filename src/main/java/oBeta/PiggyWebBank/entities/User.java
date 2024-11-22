@@ -10,6 +10,7 @@ import oBeta.PiggyWebBank.exceptions.NotAllowedException;
 import oBeta.PiggyWebBank.payloads.UserDTO;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -39,10 +40,30 @@ public class User {
     @Setter(AccessLevel.NONE)
     private LocalDate lastPasswordUpdate;
 
-    @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     private Role role;
+
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Transaction> transactionList;
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private UserCharacteristic userCharacteristic;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MonthHistory> monthHistoryList;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Goal> goalList;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<TransactionCategory> transactionCategoryList;
 
 
     public User(String surname, String username, String email, String password, LocalDate lastPasswordUpdate, Role role, String name) {
@@ -59,7 +80,7 @@ public class User {
         this.email = dto.email();
         this.username = dto.username();
         this.password = dto.password();
-        this.lastPasswordUpdate = dto.lastPasswordUpdate();
+        this.lastPasswordUpdate = LocalDate.now();
         this.name = dto.name();
         this.surname = dto.surname();
         this.role = role;

@@ -43,12 +43,12 @@ public class UserService {
 
         this.usersRepo.findByUsername(userDTO.username())
                 .ifPresent(user -> {
-                    throw new BadRequestException("User with username " + user.getName() + " already exist!");
+                    throw new BadRequestException("User with username " + user.getUsername() + " already exist!");
                 });
 
         this.usersRepo.findByEmail(userDTO.email())
                 .ifPresent(user -> {
-                    throw new BadRequestException("User with email " + user.getName() + " already exist!");
+                    throw new BadRequestException("User with email " + user.getEmail() + " already exist!");
                 });
 
         Role userRole = this.rolesService.getRoleById(userDTO.role_id());

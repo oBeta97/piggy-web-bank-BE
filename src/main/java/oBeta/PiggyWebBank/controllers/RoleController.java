@@ -40,7 +40,7 @@ public class RoleController {
     public Role addNewRole(@RequestBody @Validated RoleDTO body, BindingResult validationResult){
         if (validationResult.hasErrors()) {
             String message = validationResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage())
-                    .collect(Collectors.joining(". "));
+                    .collect(Collectors.joining(";"));
             throw new BadRequestException(message);
         }
 
@@ -52,7 +52,7 @@ public class RoleController {
     public Role updateRole(@PathVariable long roleId, @RequestBody @Validated RoleDTO body, BindingResult validationResult){
         if (validationResult.hasErrors()) {
             String message = validationResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage())
-                    .collect(Collectors.joining(". "));
+                    .collect(Collectors.joining(";"));
             throw new BadRequestException(message);
         }
 
