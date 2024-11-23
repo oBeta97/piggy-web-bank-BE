@@ -55,6 +55,11 @@ public class TransactionCategoriesService {
     public TransactionCategory saveNewUserTransactionCategory(TransactionCategoryDTO dto){
         User user = this.userService.getUserById(dto.user_id());
 
+        this.transactionCategoriesRepo.findByUserAndNameAndIsExpense(user, dto.name(), dto.isExpense()).
+                ifPresent(transactionCategory -> {
+                    throw new BadRequestException("The user " + user.getUsername() + " alredy have the " + (dto.isExpense() ? "expense" : "earning") + " named " + dto.name());
+                });
+
         return this.transactionCategoriesRepo.save(
                 new TransactionCategory(dto, user)
         );
@@ -66,6 +71,12 @@ public class TransactionCategoriesService {
         TransactionCategory found = this.getTransactionCategoryById(idToUpdate);
 
         if (user.getId() != found.getUser().getId()) throw new BadRequestException("Payload error! Wrong user");
+
+        this.transactionCategoriesRepo.findByUserAndNameAndIsExpense(user, dto.name(), dto.isExpense()).
+                ifPresent(transactionCategory -> {
+                    if(transactionCategory.getId() != found.getId())
+                        throw new BadRequestException("The user " + user.getUsername() + " alredy have the " + (dto.isExpense() ? "expense" : "earning") + " named " + dto.name());
+                });
 
         found.setName(dto.name());
         found.setIsExpense(dto.isExpense());
@@ -93,12 +104,13 @@ public class TransactionCategoriesService {
         this.transactionCategoriesRepo.delete(found);
     }
 
-    public void deleteUserTransactionCategory(long idToDelete, User user){
-        User u = this.userService.getUserById(user.getId());
+//    TODO - togliere i commenti, sono predisposizioni per il controllo del JWT
+    public void deleteUserTransactionCategory(long idToDelete/*, User user*/){
+//        User u = this.userService.getUserById(user.getId());
 
         TransactionCategory found = this.getTransactionCategoryById(idToDelete);
 
-        if (user.getId() != found.getUser().getId()) throw new BadRequestException("Request error! Wrong user");
+//        if (u.getId() != found.getUser().getId()) throw new BadRequestException("Request error! Wrong user");
 
         this.transactionCategoriesRepo.delete(found);
     }

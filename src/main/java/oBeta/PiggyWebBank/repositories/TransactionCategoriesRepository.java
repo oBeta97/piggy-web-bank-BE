@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TransactionCategoriesRepository extends JpaRepository<TransactionCategory, Long> {
@@ -18,4 +19,6 @@ public interface TransactionCategoriesRepository extends JpaRepository<Transacti
 
     @Query("SELECT tc FROM TransactionCategory tc WHERE tc.user IS NULL OR tc.user = :user  ")
     List<TransactionCategory> findAllTransactionCategoryOfAnUser(User user);
+
+    Optional<TransactionCategory> findByUserAndNameAndIsExpense(User user, String name, boolean isExpense);
 }

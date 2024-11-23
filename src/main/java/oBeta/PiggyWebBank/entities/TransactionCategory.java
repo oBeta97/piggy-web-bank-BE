@@ -22,7 +22,7 @@ public class TransactionCategory {
     @Setter(AccessLevel.NONE)
     private long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
     @ManyToOne
