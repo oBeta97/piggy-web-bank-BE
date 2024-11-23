@@ -9,6 +9,7 @@ import lombok.Setter;
 import oBeta.PiggyWebBank.payloads.GoalDTO;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 @Table(name = "goals")
@@ -29,9 +30,6 @@ public class Goal {
 
     @Column(nullable = false)
     @Setter(AccessLevel.NONE)
-    private Short period;
-
-    @Column(nullable = false)
     private double amount;
 
     @Column(nullable = false)
@@ -45,10 +43,9 @@ public class Goal {
     private User user;
 
 
-    public Goal(LocalDate goalDt, String name, Short period, double amount, double installment, LocalDate experityDt, User user) {
+    public Goal(LocalDate goalDt, String name, double amount, double installment, LocalDate experityDt, User user) {
         this.goalDt = goalDt;
         this.name = name;
-        this.period = period;
         this.amount = amount;
         this.installment = installment;
         this.experityDt = experityDt;
@@ -58,16 +55,13 @@ public class Goal {
     public Goal(GoalDTO dto, User user){
         this.goalDt = LocalDate.now();
         this.name = dto.name();
-        this.period = dto.period();
-        this.amount = dto.amount();
-        this.installment = dto.amount() / dto.period();
-        this.experityDt = LocalDate.now().plusMonths(dto.period());
+        this.experityDt = dto.expirityDt();
+        setAmount(dto.amount());
         this.user = user;
     }
 
-    public void setPeriod(short period){
-        this.period = period;
-        this.experityDt = this.goalDt.plusMonths(period);
+    public void setAmount(double amount) {
+        this.amount = amount;
+        this.installment = amount / ChronoUnit.MONTHS.between(LocalDate.now(), this.experityDt);
     }
-
 }

@@ -60,7 +60,7 @@ public class MonthHistoryBuilder {
         double availableCash = fixedTransactionList.stream().mapToDouble(Transaction::getAmount).sum();
         double availableFromGoals = goalList.stream().mapToDouble(Goal::getInstallment).sum();
 
-        this.available = availableCash + availableFromGoals - this.minimumSavings;
+        this.available = availableCash - availableFromGoals - this.minimumSavings;
         this.userCharacteristicsService.updateUserCharacteristicDailyAmount(this.user, this.available);
     }
 

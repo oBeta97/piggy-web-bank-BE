@@ -55,20 +55,27 @@ public class GoalsService {
     }
 
     public Goal updateGoal(long idToUpdate, GoalDTO dto){
-
+        User user = this.userService.getUserById(dto.user_id());
         Goal found = this.getGoalById(idToUpdate);
 
         found.setName(dto.name());
-        found.setPeriod(dto.period());
         found.setAmount(dto.amount());
 
-        return this.goalsRepo.save(found);
+        Goal res = this.goalsRepo.save(found);
+
+        this.monthHistoriesService.reloadLastMonthHistoty(user);
+
+        return res;
     }
 
     public void deleteGoal(long idToDelete){
-        this.goalsRepo.delete(
-            this.getGoalById(idToDelete)
-        );
+
+        Goal goal = this.getGoalById(idToDelete);
+
+        this.goalsRepo.delete(goal);
+
+        this.monthHistoriesService.reloadLastMonthHistoty(goal.getUser());
+
     }
 
 }

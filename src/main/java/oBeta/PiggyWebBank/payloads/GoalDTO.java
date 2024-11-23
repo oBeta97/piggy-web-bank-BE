@@ -10,10 +10,11 @@ import java.util.UUID;
 public record GoalDTO(
         @NotEmpty(message = "Name must be set!")
         String name,
-        @NotNull(message = "Period must be set!")
-        Short period,
+
         @NotNull(message = "Amount must be set!")
         double amount,
+        @FutureOrPresent(message = "Expirity must be in the future!")
+        LocalDate expirityDt,
         @NotNull(message = "User UUID must be set!")
         UUID user_id
 ) {}
