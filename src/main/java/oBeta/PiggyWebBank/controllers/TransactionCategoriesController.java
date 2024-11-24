@@ -3,7 +3,8 @@ package oBeta.PiggyWebBank.controllers;
 
 import oBeta.PiggyWebBank.entities.TransactionCategory;
 import oBeta.PiggyWebBank.exceptions.BadRequestException;
-import oBeta.PiggyWebBank.payloads.TransactionCategoryDTO;
+import oBeta.PiggyWebBank.payloads.BaseTransactionCategoryDTO;
+import oBeta.PiggyWebBank.payloads.UserTransactionCategoryDTO;
 import oBeta.PiggyWebBank.services.TransactionCategoriesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -38,7 +39,7 @@ public class TransactionCategoriesController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     // USER can save a new TransactionCategory!
-    public TransactionCategory saveNewTransactionCategory(@RequestBody @Validated TransactionCategoryDTO body, BindingResult validationResult){
+    public TransactionCategory saveNewUserTransactionCategory(@RequestBody @Validated UserTransactionCategoryDTO body, BindingResult validationResult){
         if (validationResult.hasErrors()) {
             String message = validationResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage())
                     .collect(Collectors.joining(";"));
@@ -48,16 +49,48 @@ public class TransactionCategoriesController {
         return this.transactionCategoriesService.saveNewUserTransactionCategory(body);
     }
 
-    @PutMapping("/{transactionCategoryId}")
-    // USER can update a TransactionCategory!
-    public TransactionCategory updateTransactionCategory(@PathVariable long transactionCategoryId, @RequestBody @Validated TransactionCategoryDTO body, BindingResult validationResult){
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    // ADMIN can save a new base TransactionCategory!
+    public TransactionCategory saveNewBaseTransactionCategory(@RequestBody @Validated BaseTransactionCategoryDTO body, BindingResult validationResult){
         if (validationResult.hasErrors()) {
             String message = validationResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage())
                     .collect(Collectors.joining(";"));
             throw new BadRequestException(message);
         }
 
+        return this.transactionCategoriesService.saveNewBaseTransactionCategory(body);
+    }
+
+    @PutMapping("/{transactionCategoryId}")
+    // USER can update a TransactionCategory!
+    public TransactionCategory updateUserTransactionCategory(@PathVariable long transactionCategoryId, @RequestBody @Validated UserTransactionCategoryDTO body, BindingResult validationResult){
+        if (validationResult.hasErrors()) {
+            String message = validationResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage())
+                    .collect(Collectors.joining(";"));
+            throw new BadRequestException(message);
+        }
+
+        this.getTransactionCategoryById(transactionCategoryId);
+
         return this.transactionCategoriesService.updateUserTransactionCategory(transactionCategoryId, body);
+    }
+
+    @PutMapping("/{transactionCategoryId}")
+    // ADMIN can update a TransactionCategory!
+    public TransactionCategory updateBaseTransactionCategory(@PathVariable long transactionCategoryId, @RequestBody @Validated BaseTransactionCategoryDTO body, BindingResult validationResult){
+        if (validationResult.hasErrors()) {
+            String message = validationResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage())
+                    .collect(Collectors.joining(";"));
+            throw new BadRequestException(message);
+        }
+
+        TransactionCategory transactionCategory = this.getTransactionCategoryById(transactionCategoryId);
+
+        if(transactionCategory.getUser() != null)
+            throw new BadRequestException("Transaction category " + transactionCategory.getName() + " is linked to user " + transactionCategory.getUser().getUsername());
+
+        return this.transactionCategoriesService.updateBaseTransactionCategory(transactionCategoryId, body);
     }
 
     @DeleteMapping("/{transactionCategoryId}")
@@ -67,5 +100,18 @@ public class TransactionCategoriesController {
         this.transactionCategoriesService.deleteUserTransactionCategory(transactionCategoryId);
     }
 
+    @DeleteMapping("/{transactionCategoryId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    // ADMIN can update a TransactionCategory!
+    public void deleteBaseTransactionCategory(@PathVariable long transactionCategoryId){
 
+        TransactionCategory transactionCategory = this.getTransactionCategoryById(transactionCategoryId);
+
+        if(transactionCategory.getUser() != null)
+            throw new BadRequestException("Transaction category " + transactionCategory.getName() + " is linked to user " + transactionCategory.getUser().getUsername());
+
+
+        this.transactionCategoriesService.deleteUserTransactionCategory(transactionCategoryId);
+    }
+    
 }

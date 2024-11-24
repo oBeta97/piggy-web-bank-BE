@@ -5,7 +5,7 @@ import oBeta.PiggyWebBank.entities.User;
 import oBeta.PiggyWebBank.exceptions.BadRequestException;
 import oBeta.PiggyWebBank.exceptions.NotFoundException;
 import oBeta.PiggyWebBank.payloads.BaseTransactionCategoryDTO;
-import oBeta.PiggyWebBank.payloads.TransactionCategoryDTO;
+import oBeta.PiggyWebBank.payloads.UserTransactionCategoryDTO;
 import oBeta.PiggyWebBank.repositories.TransactionCategoriesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -52,7 +52,7 @@ public class TransactionCategoriesService {
         );
     }
 
-    public TransactionCategory saveNewUserTransactionCategory(TransactionCategoryDTO dto){
+    public TransactionCategory saveNewUserTransactionCategory(UserTransactionCategoryDTO dto){
         User user = this.userService.getUserById(dto.user_id());
 
         this.transactionCategoriesRepo.findByUserAndNameAndIsExpense(user, dto.name(), dto.isExpense()).
@@ -65,7 +65,7 @@ public class TransactionCategoriesService {
         );
     }
 
-    public TransactionCategory updateUserTransactionCategory(long idToUpdate, TransactionCategoryDTO dto){
+    public TransactionCategory updateUserTransactionCategory(long idToUpdate, UserTransactionCategoryDTO dto){
         User user = this.userService.getUserById(dto.user_id());
 
         TransactionCategory found = this.getTransactionCategoryById(idToUpdate);
