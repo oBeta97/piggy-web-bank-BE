@@ -78,7 +78,12 @@ public class FixedTransactionsService {
 
         FixedTransaction found = this.getFixedTransactionById(idToUpdate);
 
-        if (!found.getUser().getId().equals(UUID.fromString(dto.user_id()))) throw new BadRequestException("Payload error! Wrong user");
+        if (!found.getUser().getId().equals(UUID.fromString(dto.user_id())))
+            throw new BadRequestException("Payload error! Wrong user");
+
+        // if there's not changes the update won't be done
+        if(this.isFoundEqualsToDTO(found, dto))
+            return found;
 
         found.setPeriod(dto.period());
         found.setAmount(dto.amount());
@@ -101,4 +106,11 @@ public class FixedTransactionsService {
         this.monthHistoriesService.reloadLastMonthHistoty(u);
 
     }
+
+    private boolean isFoundEqualsToDTO(FixedTransaction found, FixedTransactionDTO dto){
+        return found.getPeriod() == dto.period() &&
+                found.getAmount() == dto.amount() &&
+                found.getName().equals(dto.name());
+    }
+
 }

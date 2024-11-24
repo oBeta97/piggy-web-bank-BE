@@ -1,10 +1,13 @@
 package oBeta.PiggyWebBank.services;
 
+import oBeta.PiggyWebBank.entities.Feature;
+import oBeta.PiggyWebBank.entities.Role;
 import oBeta.PiggyWebBank.entities.TransactionCategory;
 import oBeta.PiggyWebBank.entities.User;
 import oBeta.PiggyWebBank.exceptions.BadRequestException;
 import oBeta.PiggyWebBank.exceptions.NotFoundException;
 import oBeta.PiggyWebBank.payloads.BaseTransactionCategoryDTO;
+import oBeta.PiggyWebBank.payloads.RoleDTO;
 import oBeta.PiggyWebBank.payloads.UserTransactionCategoryDTO;
 import oBeta.PiggyWebBank.repositories.TransactionCategoriesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,6 +94,9 @@ public class TransactionCategoriesService {
                         throw new BadRequestException("The user " + user.getUsername() + " alredy have the " + (dto.isExpense() ? "expense" : "earning") + " named " + dto.name());
                 });
 
+        if(this.isFoundEqualsToDTO(found, dto))
+            return found;
+
         found.setName(dto.name());
         found.setIsExpense(dto.isExpense());
 
@@ -102,6 +108,9 @@ public class TransactionCategoriesService {
         TransactionCategory found = this.getTransactionCategoryById(idToUpdate);
 
         if (found.getUser() != null) throw new BadRequestException("The transaction category provided is associated to a user");
+
+        if(this.isFoundEqualsToDTO(found, dto))
+            return found;
 
         found.setName(dto.name());
         found.setIsExpense(dto.isExpense());
@@ -126,5 +135,15 @@ public class TransactionCategoriesService {
 //        if (u.getId() != found.getUser().getId()) throw new BadRequestException("Request error! Wrong user");
 
         this.transactionCategoriesRepo.delete(found);
+    }
+
+    private boolean isFoundEqualsToDTO(TransactionCategory found, BaseTransactionCategoryDTO dto){
+        return found.getName().equals(dto.name()) &&
+                found.getIsExpense() == dto.isExpense();
+    }
+
+    private boolean isFoundEqualsToDTO(TransactionCategory found, UserTransactionCategoryDTO dto){
+        return found.getName().equals(dto.name()) &&
+                found.getIsExpense() == dto.isExpense();
     }
 }

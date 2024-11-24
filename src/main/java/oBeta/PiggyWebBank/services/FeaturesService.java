@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -75,9 +74,15 @@ public class FeaturesService {
             }
         );
 
+        List<Role> dtoRoleList = this.rolesService.getRolesByList(featureDTO.roleList());
+
+        // if there's not changes the update won't be done
+        if(this.isFoundEqualsToDTO(found, featureDTO, dtoRoleList))
+            return found;
+
+
         found.setName(featureDTO.name());
-        List<Role> roleList = this.rolesService.getRolesByList(featureDTO.roleList());
-        found.setRoleList(roleList);
+        found.setRoleList(dtoRoleList);
 
         return this.featuresRepo.save(found);
     }
@@ -88,5 +93,10 @@ public class FeaturesService {
         );
     }
 
+
+    private boolean isFoundEqualsToDTO(Feature found, FeatureDTO featureDTO, List<Role> dtoRoleList){
+        return found.getName().equals(featureDTO.name()) &&
+                found.getRoleList().equals(dtoRoleList);
+    }
 
 }

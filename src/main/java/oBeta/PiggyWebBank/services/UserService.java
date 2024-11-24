@@ -74,6 +74,9 @@ public class UserService {
             }
         }
 
+        if(this.isFoundEqualsToDTO(found, dto))
+            return found;
+
         found.setName(dto.name());
         found.setSurname(dto.surname());
         found.setUsername(dto.username());
@@ -90,6 +93,14 @@ public class UserService {
         this.usersRepo.delete(
                 this.getUserById(idToDelete)
         );
+    }
+
+    private boolean isFoundEqualsToDTO (User found, UserDTO dto) {
+        return found.getName().equals(dto.name()) &&
+                found.getSurname().equals(dto.surname()) &&
+                found.getUsername().equals(dto.username()) &&
+                found.getEmail().equals(dto.email()) &&
+                found.getRole().getId() == dto.role_id();
     }
 
 }

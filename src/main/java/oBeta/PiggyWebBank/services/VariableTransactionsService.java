@@ -5,6 +5,7 @@ import oBeta.PiggyWebBank.entities.VariableTransaction;
 import oBeta.PiggyWebBank.entities.User;
 import oBeta.PiggyWebBank.exceptions.BadRequestException;
 import oBeta.PiggyWebBank.exceptions.NotFoundException;
+import oBeta.PiggyWebBank.payloads.UserDTO;
 import oBeta.PiggyWebBank.payloads.VariableTransactionDTO;
 import oBeta.PiggyWebBank.repositories.VariableTransactionsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +82,9 @@ public class VariableTransactionsService {
 
         TransactionCategory transactionCategory = this.transactionCategoriesService.getTransactionCategoryById(dto.transactionCategory_id());
 
+        if(this.isFoundEqualsToDTO(found, dto))
+            return found;
+        
         found.setTransactionDt(dto.transactionDt());
         found.setAmount(dto.amount());
         found.setName(dto.name());
@@ -96,4 +100,12 @@ public class VariableTransactionsService {
 
         this.variableTransactionsRepo.delete(found);
     }
+
+    private boolean isFoundEqualsToDTO (VariableTransaction found, VariableTransactionDTO dto) {
+        return found.getTransactionDt() == dto.transactionDt() &&
+                found.getAmount() == dto.amount() &&
+                found.getName().equals(dto.name()) &&
+                found.getTransactionCategory().getId() == dto.transactionCategory_id();
+    }
+
 }

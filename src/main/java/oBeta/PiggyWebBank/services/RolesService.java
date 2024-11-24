@@ -69,10 +69,15 @@ public class RolesService {
                 throw new BadRequestException("Role with name " + role.getName() + " already exist!");
         });
 
+        List<Feature> dtoFeatureList = this.featuresService.getFeaturesByList(roleDTO.featureList());
+
+        // if there's not changes the update won't be done
+        if(this.isFoundEqualsToDTO(found, roleDTO, dtoFeatureList))
+            return found;
+
         found.setName(roleDTO.name());
 
-        List<Feature> featureList = this.featuresService.getFeaturesByList(roleDTO.featureList());
-        found.setFeatureList(featureList);
+        found.setFeatureList(dtoFeatureList);
 
         return this.rolesRepo.save(found);
     }
@@ -81,6 +86,11 @@ public class RolesService {
         this.rolesRepo.delete(
                 this.getRoleById(idToDelete)
         );
+    }
+
+    private boolean isFoundEqualsToDTO(Role found, RoleDTO featureDTO, List<Feature> dtoFeatureList){
+        return found.getName().equals(featureDTO.name()) &&
+                found.getFeatureList().equals(dtoFeatureList);
     }
 
 }

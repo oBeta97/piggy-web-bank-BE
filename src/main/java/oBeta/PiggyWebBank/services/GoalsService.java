@@ -69,10 +69,17 @@ public class GoalsService {
             user = this.userService.getUserById(UUID.fromString(dto.user_id()));
         } catch (IllegalArgumentException e) {
             throw new BadRequestException("User id format not valid!");
-        }        Goal found = this.getGoalById(idToUpdate);
+        }
+
+        Goal found = this.getGoalById(idToUpdate);
+
+        // if there's not changes the update won't be done
+        if(this.isFoundEqualsToDTO(found, dto))
+            return found;
 
         found.setName(dto.name());
         found.setAmount(dto.amount());
+        found.setExperityDt(dto.expirityDt());
 
         Goal res = this.goalsRepo.save(found);
 
@@ -89,6 +96,12 @@ public class GoalsService {
 
         this.monthHistoriesService.reloadLastMonthHistoty(goal.getUser());
 
+    }
+
+    private boolean isFoundEqualsToDTO(Goal found, GoalDTO dto){
+        return found.getName().equals(dto.name()) &&
+                found.getAmount() == dto.amount() &&
+                found.getExperityDt() == dto.expirityDt();
     }
 
 }
