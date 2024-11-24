@@ -1,24 +1,25 @@
 package oBeta.PiggyWebBank.controllers;
 
 
-import oBeta.PiggyWebBank.entities.Feature;
 import oBeta.PiggyWebBank.entities.FixedTransaction;
 import oBeta.PiggyWebBank.exceptions.BadRequestException;
-import oBeta.PiggyWebBank.payloads.FeatureDTO;
 import oBeta.PiggyWebBank.payloads.FixedTransactionDTO;
 import oBeta.PiggyWebBank.services.FixedTransactionsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.stream.Collectors;
+
 @RestController
-@RequestMapping("/fixedtransaction")
+@RequestMapping("/fixed-transactions")
 public class FixedTransactionController {
 
     @Autowired
-    FixedTransactionsService fixedTransactionsService;
+    private FixedTransactionsService fixedTransactionsService;
 
     @GetMapping
     public Page<FixedTransaction> getAllFixedTransaction(
@@ -29,14 +30,44 @@ public class FixedTransactionController {
         return this.fixedTransactionsService.getAllFixedTransactions(page, size, sortBy);
     }
 
+    @GetMapping("/{fixedTransactionId}")
+    public FixedTransaction getFixedTransactionById(@PathVariable long featureId){
+        return this.fixedTransactionsService.getFixedTransactionById(featureId);
+    }
+
+
     @PostMapping
-    public FixedTransaction saveNewFeature(@RequestBody @Validated FixedTransactionDTO body, BindingResult validationResult){
+    public FixedTransaction saveNewFixedTransaction(@RequestBody @Validated FixedTransactionDTO body, BindingResult validationResult){
         if (validationResult.hasErrors()) {
-            validationResult.getAllErrors().forEach(System.out::println);
-            throw new BadRequestException("Ci sono stati errori nel payload della fattura!");
+            String message = validationResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage())
+                    .collect(Collectors.joining(";"));
+            throw new BadRequestException(message);
         }
 
         return this.fixedTransactionsService.saveNewFixedTransaction(body);
     }
+
+    @PutMapping("/{fixedTransactionId}")
+    // ONLY DEV can update a FixedTransaction!
+    public FixedTransaction updateFixedTransaction(@PathVariable long fixedTransactionId, @RequestBody @Validated FixedTransactionDTO body, BindingResult validationResult){
+        if (validationResult.hasErrors()) {
+            String message = validationResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage())
+                    .collect(Collectors.joining(";"));
+            throw new BadRequestException(message);
+        }
+
+        return this.fixedTransactionsService.updateFixedTransaction(fixedTransactionId, body);
+    }
+
+    @DeleteMapping("/{fixedTransactionId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    // ONLY DEV can delete a FixedTransaction!
+    public void deleteFixedTransaction(@PathVariable long fixedTransactionId){
+
+        FixedTransaction fixedTransaction = this.getFixedTransactionById(fixedTransactionId);
+
+        this.fixedTransactionsService.delteFixedTransaction(fixedTransactionId, fixedTransaction.getUser());
+    }
+
 
 }

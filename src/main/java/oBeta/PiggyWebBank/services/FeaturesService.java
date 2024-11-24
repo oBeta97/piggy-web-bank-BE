@@ -67,9 +67,22 @@ public class FeaturesService {
 
         Feature found = this.getFeatureById(idToUpdate);
 
+        this.featuresRepo.findByName(featureDTO.name())
+            .ifPresent( feature -> {
+                if(feature.getId() != idToUpdate)
+                    throw new BadRequestException("Feature with name " + feature.getName() + " already exist!");
+            }
+        );
+
+        List<Role> dtoRoleList = this.rolesService.getRolesByList(featureDTO.roleList());
+
+        // if there's not changes the update won't be done
+        if(this.isFoundEqualsToDTO(found, featureDTO, dtoRoleList))
+            return found;
+
+
         found.setName(featureDTO.name());
-        List<Role> roleList = this.rolesService.getRolesByList(featureDTO.roleList());
-        found.setRoleList(roleList);
+        found.setRoleList(dtoRoleList);
 
         return this.featuresRepo.save(found);
     }
@@ -80,5 +93,10 @@ public class FeaturesService {
         );
     }
 
+
+    private boolean isFoundEqualsToDTO(Feature found, FeatureDTO featureDTO, List<Role> dtoRoleList){
+        return found.getName().equals(featureDTO.name()) &&
+                found.getRoleList().equals(dtoRoleList);
+    }
 
 }

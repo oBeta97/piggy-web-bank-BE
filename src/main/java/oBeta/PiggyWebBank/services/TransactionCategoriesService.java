@@ -1,11 +1,14 @@
 package oBeta.PiggyWebBank.services;
 
+import oBeta.PiggyWebBank.entities.Feature;
+import oBeta.PiggyWebBank.entities.Role;
 import oBeta.PiggyWebBank.entities.TransactionCategory;
 import oBeta.PiggyWebBank.entities.User;
 import oBeta.PiggyWebBank.exceptions.BadRequestException;
 import oBeta.PiggyWebBank.exceptions.NotFoundException;
 import oBeta.PiggyWebBank.payloads.BaseTransactionCategoryDTO;
-import oBeta.PiggyWebBank.payloads.TransactionCategoryDTO;
+import oBeta.PiggyWebBank.payloads.RoleDTO;
+import oBeta.PiggyWebBank.payloads.UserTransactionCategoryDTO;
 import oBeta.PiggyWebBank.repositories.TransactionCategoriesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class TransactionCategoriesService {
@@ -52,20 +56,46 @@ public class TransactionCategoriesService {
         );
     }
 
-    public TransactionCategory saveNewUserTransactionCategory(TransactionCategoryDTO dto){
-        User user = this.userService.getUserById(dto.user_id());
+    public TransactionCategory saveNewUserTransactionCategory(UserTransactionCategoryDTO dto){
+        User user;
+
+        try{
+            user = this.userService.getUserById(UUID.fromString(dto.user_id()));
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("User id format not valid!");
+        }
+
+        this.transactionCategoriesRepo.findByUserAndNameAndIsExpense(user, dto.name(), dto.isExpense()).
+                ifPresent(transactionCategory -> {
+                    throw new BadRequestException("The user " + user.getUsername() + " alredy have the " + (dto.isExpense() ? "expense" : "earning") + " named " + dto.name());
+                });
 
         return this.transactionCategoriesRepo.save(
                 new TransactionCategory(dto, user)
         );
     }
 
-    public TransactionCategory updateUserTransactionCategory(long idToUpdate, TransactionCategoryDTO dto){
-        User user = this.userService.getUserById(dto.user_id());
+    public TransactionCategory updateUserTransactionCategory(long idToUpdate, UserTransactionCategoryDTO dto){
+        User user;
+
+        try{
+            user = this.userService.getUserById(UUID.fromString(dto.user_id()));
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("User id format not valid!");
+        }
 
         TransactionCategory found = this.getTransactionCategoryById(idToUpdate);
 
         if (user.getId() != found.getUser().getId()) throw new BadRequestException("Payload error! Wrong user");
+
+        this.transactionCategoriesRepo.findByUserAndNameAndIsExpense(user, dto.name(), dto.isExpense()).
+                ifPresent(transactionCategory -> {
+                    if(transactionCategory.getId() != found.getId())
+                        throw new BadRequestException("The user " + user.getUsername() + " alredy have the " + (dto.isExpense() ? "expense" : "earning") + " named " + dto.name());
+                });
+
+        if(this.isFoundEqualsToDTO(found, dto))
+            return found;
 
         found.setName(dto.name());
         found.setIsExpense(dto.isExpense());
@@ -78,6 +108,9 @@ public class TransactionCategoriesService {
         TransactionCategory found = this.getTransactionCategoryById(idToUpdate);
 
         if (found.getUser() != null) throw new BadRequestException("The transaction category provided is associated to a user");
+
+        if(this.isFoundEqualsToDTO(found, dto))
+            return found;
 
         found.setName(dto.name());
         found.setIsExpense(dto.isExpense());
@@ -93,13 +126,24 @@ public class TransactionCategoriesService {
         this.transactionCategoriesRepo.delete(found);
     }
 
-    public void deleteUserTransactionCategory(long idToDelete, User user){
-        User u = this.userService.getUserById(user.getId());
+//    TODO - togliere i commenti, sono predisposizioni per il controllo del JWT
+    public void deleteUserTransactionCategory(long idToDelete/*, User user*/){
+//        User u = this.userService.getUserById(user.getId());
 
         TransactionCategory found = this.getTransactionCategoryById(idToDelete);
 
-        if (user.getId() != found.getUser().getId()) throw new BadRequestException("Request error! Wrong user");
+//        if (u.getId() != found.getUser().getId()) throw new BadRequestException("Request error! Wrong user");
 
         this.transactionCategoriesRepo.delete(found);
+    }
+
+    private boolean isFoundEqualsToDTO(TransactionCategory found, BaseTransactionCategoryDTO dto){
+        return found.getName().equals(dto.name()) &&
+                found.getIsExpense() == dto.isExpense();
+    }
+
+    private boolean isFoundEqualsToDTO(TransactionCategory found, UserTransactionCategoryDTO dto){
+        return found.getName().equals(dto.name()) &&
+                found.getIsExpense() == dto.isExpense();
     }
 }

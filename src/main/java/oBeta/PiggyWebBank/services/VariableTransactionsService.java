@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class VariableTransactionsService {
@@ -54,9 +55,21 @@ public class VariableTransactionsService {
 
 
     public VariableTransaction saveNewVariableTransaction(VariableTransactionDTO dto){
+        User user;
 
-        User user = this.userService.getUserById(dto.user_id());
+        try{
+            user = this.userService.getUserById(UUID.fromString(dto.user_id()));
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("User id format not valid!");
+        }
+
         TransactionCategory transactionCategory = this.transactionCategoriesService.getTransactionCategoryById(dto.transactionCategory_id());
+
+        if (transactionCategory.getIsExpense() && dto.amount() > 0)
+            throw new BadRequestException("Expenses must be negative!");
+
+        if (!transactionCategory.getIsExpense() && dto.amount() < 0)
+            throw new BadRequestException("Earning must be positive!");
 
         VariableTransaction res = this.variableTransactionsRepo.save(
                 new VariableTransaction(dto, transactionCategory, user)
@@ -70,9 +83,12 @@ public class VariableTransactionsService {
     public VariableTransaction updateVariableTransaction(long idToUpdate, VariableTransactionDTO dto){
 
         VariableTransaction found = this.getVariableTransactionById(idToUpdate);
-        if(found.getUser().getId() != dto.user_id()) throw new BadRequestException("Payload error! Wrong user");
+        if (!found.getUser().getId().equals(UUID.fromString(dto.user_id()))) throw new BadRequestException("Payload error! Wrong user");
 
         TransactionCategory transactionCategory = this.transactionCategoriesService.getTransactionCategoryById(dto.transactionCategory_id());
+
+        if(this.isFoundEqualsToDTO(found, dto))
+            return found;
 
         found.setTransactionDt(dto.transactionDt());
         found.setAmount(dto.amount());
@@ -89,4 +105,12 @@ public class VariableTransactionsService {
 
         this.variableTransactionsRepo.delete(found);
     }
+
+    private boolean isFoundEqualsToDTO (VariableTransaction found, VariableTransactionDTO dto) {
+        return found.getTransactionDt().equals(dto.transactionDt()) &&
+                found.getAmount() == dto.amount() &&
+                found.getName().equals(dto.name()) &&
+                found.getTransactionCategory().getId() == dto.transactionCategory_id();
+    }
+
 }

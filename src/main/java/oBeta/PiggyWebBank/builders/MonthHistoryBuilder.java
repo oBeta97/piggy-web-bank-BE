@@ -57,10 +57,15 @@ public class MonthHistoryBuilder {
         List<FixedTransaction> fixedTransactionList = this.fixedTransactionsService.getAllUserFixedTransactions(this.user);
         List<Goal> goalList = this.goalsService.getGoalsByUser(this.user);
 
-        double availableCash = fixedTransactionList.stream().mapToDouble(Transaction::getAmount).sum();
-        double availableFromGoals = goalList.stream().mapToDouble(Goal::getInstallment).sum();
+        double availableCash = fixedTransactionList.stream().
+                mapToDouble(transaction -> transaction.getAmount() / transaction.getPeriod()).
+                sum();
 
-        this.available = availableCash + availableFromGoals - this.minimumSavings;
+        double availableFromGoals = goalList.stream().
+                mapToDouble(Goal::getInstallment).
+                sum();
+
+        this.available = availableCash - availableFromGoals - this.minimumSavings;
         this.userCharacteristicsService.updateUserCharacteristicDailyAmount(this.user, this.available);
     }
 

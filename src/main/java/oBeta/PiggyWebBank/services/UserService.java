@@ -43,12 +43,12 @@ public class UserService {
 
         this.usersRepo.findByUsername(userDTO.username())
                 .ifPresent(user -> {
-                    throw new BadRequestException("User with username " + user.getName() + " already exist!");
+                    throw new BadRequestException("User with username " + user.getUsername() + " already exist!");
                 });
 
         this.usersRepo.findByEmail(userDTO.email())
                 .ifPresent(user -> {
-                    throw new BadRequestException("User with email " + user.getName() + " already exist!");
+                    throw new BadRequestException("User with email " + user.getEmail() + " already exist!");
                 });
 
         Role userRole = this.rolesService.getRoleById(userDTO.role_id());
@@ -74,6 +74,9 @@ public class UserService {
             }
         }
 
+        if(this.isFoundEqualsToDTO(found, dto))
+            return found;
+
         found.setName(dto.name());
         found.setSurname(dto.surname());
         found.setUsername(dto.username());
@@ -90,6 +93,14 @@ public class UserService {
         this.usersRepo.delete(
                 this.getUserById(idToDelete)
         );
+    }
+
+    private boolean isFoundEqualsToDTO (User found, UserDTO dto) {
+        return found.getName().equals(dto.name()) &&
+                found.getSurname().equals(dto.surname()) &&
+                found.getUsername().equals(dto.username()) &&
+                found.getEmail().equals(dto.email()) &&
+                found.getRole().getId() == dto.role_id();
     }
 
 }

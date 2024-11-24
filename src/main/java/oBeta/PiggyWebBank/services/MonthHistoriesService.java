@@ -64,15 +64,19 @@ public class MonthHistoriesService {
 
         MonthHistory lastMonthHistory = this.monthHistoriesRepo.findFirstByUserOrderByIdDesc(user);
 
+        // Cause of the flush of the save must be cloned the values
+        double lastMonthHistoryAvailable = lastMonthHistory.getAvailable();
+        double lastMonthHistorySavings = lastMonthHistory.getSavings();
+
         MonthHistory updatedMonth = this.monthHistoryBuilder.buildNewMonth(lastMonthHistory.getYear(), lastMonthHistory.getMonth(), lastMonthHistory.getUser());
         updatedMonth.setId(lastMonthHistory.getId());
 
         this.monthHistoriesRepo.save(updatedMonth);
 
-        if(updatedMonth.getAvailable() != lastMonthHistory.getAvailable())
+        if(updatedMonth.getAvailable() != lastMonthHistoryAvailable)
             this.userCharacteristicsService.updateUserCharacteristicDailyAmount(user,updatedMonth.getAvailable());
 
-        if(updatedMonth.getSavings() != lastMonthHistory.getSavings())
+        if(updatedMonth.getSavings() != lastMonthHistorySavings)
             this.userCharacteristicsService.updatUserCharacteristicTodayAmount(user, updatedMonth.getEarnings() + updatedMonth.getExpenses());
     }
 

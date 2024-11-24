@@ -6,10 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
-public interface UserCharacteristcsRepository extends JpaRepository<UserCharacteristic, Long> {
+public interface UserCharacteristicsRepository extends JpaRepository<UserCharacteristic, Long> {
 
     Optional<UserCharacteristic> findByUser(User user);
 }

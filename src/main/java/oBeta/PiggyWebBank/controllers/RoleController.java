@@ -1,9 +1,9 @@
 package oBeta.PiggyWebBank.controllers;
 
-import oBeta.PiggyWebBank.entities.Feature;
+import oBeta.PiggyWebBank.entities.Role;
 import oBeta.PiggyWebBank.exceptions.BadRequestException;
-import oBeta.PiggyWebBank.payloads.FeatureDTO;
-import oBeta.PiggyWebBank.services.FeaturesService;
+import oBeta.PiggyWebBank.payloads.RoleDTO;
+import oBeta.PiggyWebBank.services.RolesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -14,56 +14,57 @@ import org.springframework.web.bind.annotation.*;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/features")
-public class FeaturesController {
+@RequestMapping("/roles")
+public class RoleController {
 
     @Autowired
-    private FeaturesService featuresService;
+    private RolesService rolesService;
 
     @GetMapping
-    public Page<Feature> getAllFeatures(
+    public Page<Role> getAllFeatures(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy
     ){
-        return this.featuresService.getAllFeatures(page, size, sortBy);
+        return this.rolesService.getAllRoles(page, size, sortBy);
     }
 
-    @GetMapping("/{featureId}")
-    public Feature getFeatureById(@PathVariable long featureId){
-        return this.featuresService.getFeatureById(featureId);
+    @GetMapping("/{roleId}")
+    public Role getRoleById(@PathVariable long roleId){
+        return this.rolesService.getRoleById(roleId);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    // ONLY DEV can save a new Feature!
-    public Feature saveNewFeature(@RequestBody @Validated FeatureDTO body, BindingResult validationResult){
+    // ADMIN can update a Role!
+    public Role addNewRole(@RequestBody @Validated RoleDTO body, BindingResult validationResult){
         if (validationResult.hasErrors()) {
             String message = validationResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage())
                     .collect(Collectors.joining(";"));
             throw new BadRequestException(message);
         }
 
-        return this.featuresService.saveNewFeature(body);
+        return this.rolesService.saveNewRole(body);
     }
 
-    @PutMapping("/{featureId}")
-    // ONLY DEV can update a Feature!
-    public Feature updateFeature(@PathVariable long featureId, @RequestBody @Validated FeatureDTO body, BindingResult validationResult){
+    @PutMapping("/{roleId}")
+    // ADMIN can update a Role!
+    public Role updateRole(@PathVariable long roleId, @RequestBody @Validated RoleDTO body, BindingResult validationResult){
         if (validationResult.hasErrors()) {
             String message = validationResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage())
                     .collect(Collectors.joining(";"));
             throw new BadRequestException(message);
         }
 
-        return this.featuresService.updateFeature(featureId, body);
+        return this.rolesService.updateRole(roleId, body);
+
     }
 
-    @DeleteMapping("/{featureId}")
+    @DeleteMapping("/{roleId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    // ONLY DEV can delete a Feature!
-    public void deleteFeature(@PathVariable long featureId){
-        this.featuresService.deleteFeature(featureId);
+    // ADMIN can delete roles!
+    public void deleteRole(@PathVariable long roleId){
+        this.rolesService.deleteRole(roleId);
     }
 
 }
