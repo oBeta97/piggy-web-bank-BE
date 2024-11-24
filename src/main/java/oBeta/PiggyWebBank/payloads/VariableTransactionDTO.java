@@ -6,10 +6,9 @@ import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Pattern;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 public record VariableTransactionDTO(
-        @NotEmpty(message = "Name name must be set!")
+        @NotEmpty(message = "Name must be set!")
         String name,
         @NotNull(message = "Amount must be set!")
         double amount,

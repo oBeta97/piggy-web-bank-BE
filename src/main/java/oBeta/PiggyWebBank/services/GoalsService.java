@@ -101,7 +101,7 @@ public class GoalsService {
     private boolean isFoundEqualsToDTO(Goal found, GoalDTO dto){
         return found.getName().equals(dto.name()) &&
                 found.getAmount() == dto.amount() &&
-                found.getExperityDt() == dto.expirityDt();
+                found.getExperityDt().equals(dto.expirityDt());
     }
 
 }

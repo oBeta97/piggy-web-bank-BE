@@ -2,6 +2,7 @@ package oBeta.PiggyWebBank.exceptions;
 
 import oBeta.PiggyWebBank.payloads.ErrorsResponseDTO;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -12,9 +13,15 @@ import java.time.LocalDateTime;
 public class ExceptionsHandler {
 
     @ExceptionHandler(BadRequestException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST) // 400
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorsResponseDTO handleBadrequest(BadRequestException ex) {
         return new ErrorsResponseDTO("400", ex.getMessage(), LocalDateTime.now());
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorsResponseDTO handleBadJSON(HttpMessageNotReadableException ex){
+        return new ErrorsResponseDTO("500", "Error deserializing the JSON", LocalDateTime.now());
     }
 
 //    @ExceptionHandler(UnauthorizedException.class)

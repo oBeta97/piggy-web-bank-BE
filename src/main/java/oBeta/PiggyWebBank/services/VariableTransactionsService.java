@@ -84,7 +84,7 @@ public class VariableTransactionsService {
 
         if(this.isFoundEqualsToDTO(found, dto))
             return found;
-        
+
         found.setTransactionDt(dto.transactionDt());
         found.setAmount(dto.amount());
         found.setName(dto.name());
@@ -102,7 +102,7 @@ public class VariableTransactionsService {
     }
 
     private boolean isFoundEqualsToDTO (VariableTransaction found, VariableTransactionDTO dto) {
-        return found.getTransactionDt() == dto.transactionDt() &&
+        return found.getTransactionDt().equals(dto.transactionDt()) &&
                 found.getAmount() == dto.amount() &&
                 found.getName().equals(dto.name()) &&
                 found.getTransactionCategory().getId() == dto.transactionCategory_id();
