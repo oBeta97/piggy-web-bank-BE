@@ -49,7 +49,7 @@ public class TransactionCategoriesController {
         return this.transactionCategoriesService.saveNewUserTransactionCategory(body);
     }
 
-    @PostMapping
+    @PostMapping("/base")
     @ResponseStatus(HttpStatus.CREATED)
     // ADMIN can save a new base TransactionCategory!
     public TransactionCategory saveNewBaseTransactionCategory(@RequestBody @Validated BaseTransactionCategoryDTO body, BindingResult validationResult){
@@ -76,7 +76,7 @@ public class TransactionCategoriesController {
         return this.transactionCategoriesService.updateUserTransactionCategory(transactionCategoryId, body);
     }
 
-    @PutMapping("/{transactionCategoryId}")
+    @PutMapping("/base/{transactionCategoryId}")
     // ADMIN can update a TransactionCategory!
     public TransactionCategory updateBaseTransactionCategory(@PathVariable long transactionCategoryId, @RequestBody @Validated BaseTransactionCategoryDTO body, BindingResult validationResult){
         if (validationResult.hasErrors()) {
@@ -100,7 +100,7 @@ public class TransactionCategoriesController {
         this.transactionCategoriesService.deleteUserTransactionCategory(transactionCategoryId);
     }
 
-    @DeleteMapping("/{transactionCategoryId}")
+    @DeleteMapping("/base/{transactionCategoryId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     // ADMIN can update a TransactionCategory!
     public void deleteBaseTransactionCategory(@PathVariable long transactionCategoryId){
@@ -113,5 +113,5 @@ public class TransactionCategoriesController {
 
         this.transactionCategoriesService.deleteUserTransactionCategory(transactionCategoryId);
     }
-    
+
 }
