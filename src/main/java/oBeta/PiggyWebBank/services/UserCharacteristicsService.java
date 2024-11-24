@@ -2,6 +2,7 @@ package oBeta.PiggyWebBank.services;
 
 import oBeta.PiggyWebBank.entities.User;
 import oBeta.PiggyWebBank.entities.UserCharacteristic;
+import oBeta.PiggyWebBank.exceptions.BadRequestException;
 import oBeta.PiggyWebBank.exceptions.NotFoundException;
 import oBeta.PiggyWebBank.payloads.UserCharacteristicDTO;
 import oBeta.PiggyWebBank.repositories.UserCharacteristicsRepository;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Service
 public class UserCharacteristicsService {
@@ -53,7 +55,13 @@ public class UserCharacteristicsService {
 
     public UserCharacteristic updateUserCharacteristic(UserCharacteristicDTO dto){
 
-        User user = this.userService.getUserById(dto.user_id());
+        User user;
+
+        try{
+            user = this.userService.getUserById(UUID.fromString(dto.user_id()));
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("User id format not valid!");
+        }
 
         UserCharacteristic found = this.getUserCharacteristicByUser(user);
 

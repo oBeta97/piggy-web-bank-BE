@@ -1,13 +1,6 @@
 package oBeta.PiggyWebBank.payloads;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.*;
-import lombok.AccessLevel;
-import lombok.Setter;
-import oBeta.PiggyWebBank.entities.Role;
-
-import java.time.LocalDate;
 
 public record UserDTO(
         String name,

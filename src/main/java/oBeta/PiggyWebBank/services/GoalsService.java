@@ -2,6 +2,7 @@ package oBeta.PiggyWebBank.services;
 
 import oBeta.PiggyWebBank.entities.Goal;
 import oBeta.PiggyWebBank.entities.User;
+import oBeta.PiggyWebBank.exceptions.BadRequestException;
 import oBeta.PiggyWebBank.exceptions.NotFoundException;
 import oBeta.PiggyWebBank.payloads.GoalDTO;
 import oBeta.PiggyWebBank.repositories.GoalsRepository;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class GoalsService {
@@ -43,7 +45,13 @@ public class GoalsService {
     }
 
     public Goal saveNewGoal(GoalDTO dto){
-        User user = this.userService.getUserById(dto.user_id());
+        User user;
+
+        try{
+            user = this.userService.getUserById(UUID.fromString(dto.user_id()));
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("User id format not valid!");
+        }
 
         Goal res = this.goalsRepo.save(
                 new Goal(dto, user)
@@ -55,8 +63,13 @@ public class GoalsService {
     }
 
     public Goal updateGoal(long idToUpdate, GoalDTO dto){
-        User user = this.userService.getUserById(dto.user_id());
-        Goal found = this.getGoalById(idToUpdate);
+        User user;
+
+        try{
+            user = this.userService.getUserById(UUID.fromString(dto.user_id()));
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("User id format not valid!");
+        }        Goal found = this.getGoalById(idToUpdate);
 
         found.setName(dto.name());
         found.setAmount(dto.amount());

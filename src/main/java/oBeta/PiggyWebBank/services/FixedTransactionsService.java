@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class FixedTransactionsService {
@@ -56,7 +57,13 @@ public class FixedTransactionsService {
 
     public FixedTransaction saveNewFixedTransaction(FixedTransactionDTO dto){
 
-        User user = this.userService.getUserById(dto.user_id());
+        User user;
+
+        try{
+            user = this.userService.getUserById(UUID.fromString(dto.user_id()));
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("User id format not valid!");
+        }
         FixedTransaction res =  this.fixedTransactionsRepo.save(
                 new FixedTransaction(dto, user)
         );
@@ -71,13 +78,18 @@ public class FixedTransactionsService {
 
         FixedTransaction found = this.getFixedTransactionById(idToUpdate);
 
-        if(found.getUser().getId() != dto.user_id()) throw new BadRequestException("Payload error! Wrong user");
+        if (!found.getUser().getId().equals(UUID.fromString(dto.user_id()))) throw new BadRequestException("Payload error! Wrong user");
 
         found.setPeriod(dto.period());
         found.setAmount(dto.amount());
         found.setName(dto.name());
 
-        return this.fixedTransactionsRepo.save(found);
+        FixedTransaction res =  this.fixedTransactionsRepo.save(found);
+
+        // After save on fixed transaction the month history will be reloaded
+        this.monthHistoriesService.reloadLastMonthHistoty(found.getUser());
+
+        return res;
     }
 
     public void delteFixedTransaction(long idToDelete, User u){
@@ -86,5 +98,7 @@ public class FixedTransactionsService {
         if(found.getUser().getId() != u.getId()) throw new BadRequestException("Request error! Wrong user");
 
         this.fixedTransactionsRepo.delete(found);
+        this.monthHistoriesService.reloadLastMonthHistoty(u);
+
     }
 }

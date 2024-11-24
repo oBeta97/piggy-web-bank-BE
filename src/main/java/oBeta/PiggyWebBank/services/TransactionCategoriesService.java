@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class TransactionCategoriesService {
@@ -53,7 +54,13 @@ public class TransactionCategoriesService {
     }
 
     public TransactionCategory saveNewUserTransactionCategory(UserTransactionCategoryDTO dto){
-        User user = this.userService.getUserById(dto.user_id());
+        User user;
+
+        try{
+            user = this.userService.getUserById(UUID.fromString(dto.user_id()));
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("User id format not valid!");
+        }
 
         this.transactionCategoriesRepo.findByUserAndNameAndIsExpense(user, dto.name(), dto.isExpense()).
                 ifPresent(transactionCategory -> {
@@ -66,7 +73,13 @@ public class TransactionCategoriesService {
     }
 
     public TransactionCategory updateUserTransactionCategory(long idToUpdate, UserTransactionCategoryDTO dto){
-        User user = this.userService.getUserById(dto.user_id());
+        User user;
+
+        try{
+            user = this.userService.getUserById(UUID.fromString(dto.user_id()));
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("User id format not valid!");
+        }
 
         TransactionCategory found = this.getTransactionCategoryById(idToUpdate);
 

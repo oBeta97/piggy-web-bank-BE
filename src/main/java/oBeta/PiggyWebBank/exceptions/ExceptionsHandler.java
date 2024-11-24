@@ -39,7 +39,7 @@ public class ExceptionsHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorsResponseDTO handleGeneric(Exception ex) {
         ex.printStackTrace();
-        return new ErrorsResponseDTO("500", "Problema lato server!", LocalDateTime.now());
+        return new ErrorsResponseDTO("500", "Internal server error!", LocalDateTime.now());
     }
 
 }
