@@ -5,7 +5,6 @@ import oBeta.PiggyWebBank.entities.VariableTransaction;
 import oBeta.PiggyWebBank.entities.User;
 import oBeta.PiggyWebBank.exceptions.BadRequestException;
 import oBeta.PiggyWebBank.exceptions.NotFoundException;
-import oBeta.PiggyWebBank.payloads.UserDTO;
 import oBeta.PiggyWebBank.payloads.VariableTransactionDTO;
 import oBeta.PiggyWebBank.repositories.VariableTransactionsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +64,12 @@ public class VariableTransactionsService {
         }
 
         TransactionCategory transactionCategory = this.transactionCategoriesService.getTransactionCategoryById(dto.transactionCategory_id());
+
+        if (transactionCategory.getIsExpense() && dto.amount() > 0)
+            throw new BadRequestException("Expenses must be negative!");
+
+        if (!transactionCategory.getIsExpense() && dto.amount() < 0)
+            throw new BadRequestException("Earning must be positive!");
 
         VariableTransaction res = this.variableTransactionsRepo.save(
                 new VariableTransaction(dto, transactionCategory, user)
