@@ -7,8 +7,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import oBeta.PiggyWebBank.exceptions.NotAllowedException;
+import oBeta.PiggyWebBank.payloads.UserDTO;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -38,22 +40,54 @@ public class User {
     @Setter(AccessLevel.NONE)
     private LocalDate lastPasswordUpdate;
 
-
     @JsonIgnore
-    @OneToOne(mappedBy = "user")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id")
     private Role role;
 
 
-    public User(String email, String username, LocalDate lastPasswordUpdate, String password, String name, String surname) {
-        this.email = email;
-        this.username = username;
-        this.lastPasswordUpdate = lastPasswordUpdate;
-        setPassword(password);
-        this.name = name;
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Transaction> transactionList;
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private UserCharacteristic userCharacteristic;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MonthHistory> monthHistoryList;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Goal> goalList;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<TransactionCategory> transactionCategoryList;
+
+
+    public User(String surname, String username, String email, String password, LocalDate lastPasswordUpdate, Role role, String name) {
         this.surname = surname;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.lastPasswordUpdate = lastPasswordUpdate;
+        this.role = role;
+        this.name = name;
     }
 
-    public void setPassword(String _password){
+    public User(UserDTO dto, Role role){
+        this.email = dto.email();
+        this.username = dto.username();
+        this.password = dto.password();
+        this.lastPasswordUpdate = LocalDate.now();
+        this.name = dto.name();
+        this.surname = dto.surname();
+        this.role = role;
+    }
+
+    public void setNewPassword(String _password){
 
         // avoid to set the same password when updated
         if(_password.equals(this.getPassword())) throw new NotAllowedException("The password must be different from the existing one");

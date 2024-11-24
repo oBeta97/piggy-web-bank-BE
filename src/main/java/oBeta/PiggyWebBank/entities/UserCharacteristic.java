@@ -17,7 +17,7 @@ public class UserCharacteristic {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    private Long id;
+    private long id;
 
     @Column(nullable = false)
     private String avatar;
@@ -26,20 +26,39 @@ public class UserCharacteristic {
     private String currency;
 
     @Column(nullable = false, name = "daily_amount")
-    private Double dailyAmount;
+    private double dailyAmount;
 
     @Column(nullable = false, name = "today_amount")
-    private Double todayAmount;
+    private double todayAmount;
+
+    @Column(nullable = false, name = "minimum_savings")
+    private double minimumSavings;
 
     @OneToOne
     @JoinColumn(name = "user_id", unique = true)
     private User user;
 
-    public UserCharacteristic(String avatar, String currency, Double dailyAmount, Double todayAmount, User user) {
+    public UserCharacteristic(String avatar, String currency, double dailyAmount, double todayAmount, double minimumSavings, User user) {
         this.avatar = avatar;
         this.currency = currency;
         this.dailyAmount = dailyAmount;
         this.todayAmount = todayAmount;
+        this.minimumSavings = minimumSavings;
         this.user = user;
+    }
+
+    // Constructor for the new UserCharacteristic made by SignIn!
+    public UserCharacteristic(String currency, User user){
+        setDefaultAvatar(user);
+        this.currency = currency;
+        this.dailyAmount = 0.0;
+        this.todayAmount = 0.0;
+        this.minimumSavings = 0.0;
+        this.user = user;
+    }
+
+
+    private void setDefaultAvatar(User user) {
+        this.avatar = "https://ui-avatars.com/api/?name=" + user.getName() + "+" + user.getSurname();
     }
 }

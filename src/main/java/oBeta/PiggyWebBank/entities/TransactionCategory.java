@@ -6,8 +6,8 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.UUID;
+import oBeta.PiggyWebBank.payloads.BaseTransactionCategoryDTO;
+import oBeta.PiggyWebBank.payloads.UserTransactionCategoryDTO;
 
 @Entity
 @Table(name = "transaction_categories")
@@ -18,10 +18,10 @@ public class TransactionCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    private Long id;
+    private long id;
 
-    @Column(nullable = false, unique = true)
-    private Long name;
+    @Column(nullable = false)
+    private String name;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = true)
@@ -30,10 +30,22 @@ public class TransactionCategory {
     @Column(name = "is_expense", nullable = false)
     private Boolean isExpense;
 
-    public TransactionCategory(Long name, User user, Boolean isExpense) {
+    public TransactionCategory(String name, User user, Boolean isExpense) {
         this.name = name;
         this.user = user;
         this.isExpense = isExpense;
+    }
+
+    public TransactionCategory(BaseTransactionCategoryDTO dto){
+        this.name = dto.name();
+        this.user = null;
+        this.isExpense = dto.isExpense();
+    }
+
+    public TransactionCategory(UserTransactionCategoryDTO dto, User user){
+        this.name = dto.name();
+        this.user = user;
+        this.isExpense = dto.isExpense();
     }
 }
 
