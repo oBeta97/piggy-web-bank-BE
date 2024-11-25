@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RolesService {
@@ -56,8 +57,14 @@ public class RolesService {
                 });
 
         List<Feature> featureList = this.featuresService.getFeaturesByList(roleDTO.featureList());
+        Role role = new Role(roleDTO.name(), featureList);
 
-        return this.rolesRepo.save(new Role(roleDTO.name(), featureList));
+        for (Feature feature : featureList) {
+            feature.getRoleList().add(role);
+        }
+
+        return rolesRepo.save(role);
+
     }
 
     public Role updateRole (long idToUpdate, RoleDTO roleDTO){
@@ -77,15 +84,29 @@ public class RolesService {
 
         found.setName(roleDTO.name());
 
+        found.getFeatureList().forEach(feature -> feature.getRoleList().remove(found));
+
+        for (Feature feature : dtoFeatureList) {
+            feature.getRoleList().add(found);
+        }
         found.setFeatureList(dtoFeatureList);
 
         return this.rolesRepo.save(found);
     }
 
     public void deleteRole(long idToDelete){
-        this.rolesRepo.delete(
-                this.getRoleById(idToDelete)
-        );
+        Role roleToDelete = this.rolesRepo.findById(idToDelete)
+                .orElseThrow(() -> new NotFoundException("Role with id " + idToDelete + " not found!" ));
+
+        for (Feature feature : roleToDelete.getFeatureList()) {
+            feature.getRoleList().remove(roleToDelete);
+        }
+
+        roleToDelete.getFeatureList().clear();
+
+        this.rolesRepo.save(roleToDelete);
+
+        this.rolesRepo.delete(roleToDelete);
     }
 
     private boolean isFoundEqualsToDTO(Role found, RoleDTO featureDTO, List<Feature> dtoFeatureList){
