@@ -24,11 +24,11 @@ public class ExceptionsHandler {
         return new ErrorsResponseDTO("500", "Error deserializing the JSON", LocalDateTime.now());
     }
 
-//    @ExceptionHandler(UnauthorizedException.class)
-//    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-//    public ErrorsResponseDTO handleUnauthorized(UnauthorizedException ex) {
-//        return new ErrorsResponseDTO("401", ex.getMessage(), LocalDateTime.now());
-//    }
+    @ExceptionHandler(UnauthorizedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorsResponseDTO handleUnauthorized(UnauthorizedException ex) {
+        return new ErrorsResponseDTO("401", ex.getMessage(), LocalDateTime.now());
+    }
 
 //    @ExceptionHandler(AuthorizationDeniedException.class)
 //    @ResponseStatus(HttpStatus.FORBIDDEN)

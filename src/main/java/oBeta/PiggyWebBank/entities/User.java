@@ -8,16 +8,21 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import oBeta.PiggyWebBank.exceptions.NotAllowedException;
 import oBeta.PiggyWebBank.payloads.UserDTO;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.GrantedAuthority;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
 @Data
 @NoArgsConstructor
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -94,6 +99,17 @@ public class User {
 
         this.password = _password;
         this.lastPasswordUpdate = LocalDate.now();
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.role.
+                getFeatureList().
+                stream().
+                map(feature ->
+                        new SimpleGrantedAuthority(feature.getName())
+                ).
+                collect(Collectors.toList());
     }
 
 
