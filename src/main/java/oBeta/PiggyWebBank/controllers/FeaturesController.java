@@ -26,7 +26,7 @@ public class FeaturesController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy
     ){
-        return this.featuresService.getAllFeatures(page, size, sortBy);
+        return this.featuresService.getPageOfAllFeatures(page, size, sortBy);
     }
 
     @GetMapping("/{featureId}")
