@@ -24,16 +24,10 @@ public class Feature {
     private String  name;
 
     @JsonIgnore
-    @ManyToMany
-    @JoinTable(
-            name = "roles_features",
-            joinColumns = @JoinColumn(name = "feature_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
+    @ManyToMany(mappedBy = "featureList")
     private List<Role> roleList;
 
-    public Feature(String name, List<Role> roleList) {
+    public Feature(String name) {
         this.name = name;
-        this.roleList = roleList;
     }
 }
