@@ -1,4 +1,4 @@
-package oBeta.PiggyWebBank.swagger;
+package oBeta.PiggyWebBank.configurations;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
