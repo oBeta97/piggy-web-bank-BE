@@ -4,7 +4,6 @@ package oBeta.PiggyWebBank.controllers.me;
 import oBeta.PiggyWebBank.entities.FixedTransaction;
 import oBeta.PiggyWebBank.entities.User;
 import oBeta.PiggyWebBank.payloads.admin.FixedTransactionDTO;
-import oBeta.PiggyWebBank.security.UserValidation;
 import oBeta.PiggyWebBank.security.ValidationControl;
 import oBeta.PiggyWebBank.services.FixedTransactionsService;
 import oBeta.PiggyWebBank.services.UserService;
@@ -24,8 +23,7 @@ public class MeController {
     @Autowired
     private FixedTransactionsService fixedTransactionsService;
 
-    @Autowired
-    private UserValidation userValidation;
+
 
     @Autowired
     private ValidationControl validationControl;
@@ -39,8 +37,6 @@ public class MeController {
     public FixedTransaction getMeFixedTransactionById(@AuthenticationPrincipal User loggedUser, @PathVariable long fixedTransactionId){
         FixedTransaction res = this.fixedTransactionsService.getFixedTransactionById(fixedTransactionId);
 
-        userValidation.validateUser(loggedUser, res, FixedTransaction.class, fixedTransactionId);
-
         return res;
     }
 
@@ -51,7 +47,6 @@ public class MeController {
             BindingResult validationResult
     ){
         this.validationControl.checkErrors(validationResult);
-        this.userValidation.validateUser(loggedUser, body);
 
         return this.fixedTransactionsService.saveNewFixedTransaction(body);
     }
