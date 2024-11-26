@@ -6,7 +6,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import oBeta.PiggyWebBank.payloads.GoalDTO;
+import oBeta.PiggyWebBank.payloads.admin.GoalDTO;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;

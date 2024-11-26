@@ -1,10 +1,9 @@
-package oBeta.PiggyWebBank.controllers;
+package oBeta.PiggyWebBank.controllers.admin;
 
 import oBeta.PiggyWebBank.entities.*;
 import oBeta.PiggyWebBank.entities.User;
 import oBeta.PiggyWebBank.exceptions.BadRequestException;
-import oBeta.PiggyWebBank.payloads.UserDTO;
-import oBeta.PiggyWebBank.payloads.UserDTO;
+import oBeta.PiggyWebBank.payloads.admin.UserDTO;
 import oBeta.PiggyWebBank.services.MonthHistoriesService;
 import oBeta.PiggyWebBank.services.UserCharacteristicsService;
 import oBeta.PiggyWebBank.services.UserService;

@@ -1,9 +1,7 @@
-package oBeta.PiggyWebBank.payloads;
+package oBeta.PiggyWebBank.payloads.admin;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-
-import java.util.UUID;
 
 public record UserTransactionCategoryDTO(
 

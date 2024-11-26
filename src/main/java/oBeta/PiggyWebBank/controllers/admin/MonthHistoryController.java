@@ -1,4 +1,4 @@
-package oBeta.PiggyWebBank.controllers;
+package oBeta.PiggyWebBank.controllers.admin;
 
 
 import oBeta.PiggyWebBank.entities.MonthHistory;

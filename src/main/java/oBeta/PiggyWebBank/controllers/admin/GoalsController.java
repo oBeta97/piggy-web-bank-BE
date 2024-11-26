@@ -1,9 +1,10 @@
-package oBeta.PiggyWebBank.controllers;
+package oBeta.PiggyWebBank.controllers.admin;
 
-import oBeta.PiggyWebBank.entities.Role;
+
+import oBeta.PiggyWebBank.entities.Goal;
 import oBeta.PiggyWebBank.exceptions.BadRequestException;
-import oBeta.PiggyWebBank.payloads.RoleDTO;
-import oBeta.PiggyWebBank.services.RolesService;
+import oBeta.PiggyWebBank.payloads.admin.GoalDTO;
+import oBeta.PiggyWebBank.services.GoalsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -14,57 +15,58 @@ import org.springframework.web.bind.annotation.*;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/roles")
-public class RoleController {
+@RequestMapping("/goals")
+public class GoalsController {
 
     @Autowired
-    private RolesService rolesService;
+    private GoalsService goalsService;
+
 
     @GetMapping
-    public Page<Role> getAllFeatures(
+    public Page<Goal> getAllGoals(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy
     ){
-        return this.rolesService.getAllRoles(page, size, sortBy);
+        return this.goalsService.getAllGoals(page, size, sortBy);
     }
 
-    @GetMapping("/{roleId}")
-    public Role getRoleById(@PathVariable long roleId){
-        return this.rolesService.getRoleById(roleId);
+    @GetMapping("/{goalId}")
+    public Goal getGoalById(@PathVariable long goalId){
+        return this.goalsService.getGoalById(goalId);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    // ADMIN can update a Role!
-    public Role addNewRole(@RequestBody @Validated RoleDTO body, BindingResult validationResult){
+    // USER can save a new Goal!
+    public Goal saveNewGoal(@RequestBody @Validated GoalDTO body, BindingResult validationResult){
         if (validationResult.hasErrors()) {
             String message = validationResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage())
                     .collect(Collectors.joining(";"));
             throw new BadRequestException(message);
         }
 
-        return this.rolesService.saveNewRole(body);
+        return this.goalsService.saveNewGoal(body);
     }
 
-    @PutMapping("/{roleId}")
-    // ADMIN can update a Role!
-    public Role updateRole(@PathVariable long roleId, @RequestBody @Validated RoleDTO body, BindingResult validationResult){
+    @PutMapping("/{goalId}")
+    // USER can update a Goal!
+    public Goal updateGoal(@PathVariable long goalId, @RequestBody @Validated GoalDTO body, BindingResult validationResult){
         if (validationResult.hasErrors()) {
             String message = validationResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage())
                     .collect(Collectors.joining(";"));
             throw new BadRequestException(message);
         }
 
-        return this.rolesService.updateRole(roleId, body);
-
+        return this.goalsService.updateGoal(goalId, body);
     }
 
-    @DeleteMapping("/{roleId}")
+    @DeleteMapping("/{goalId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    // ADMIN can delete roles!
-    public void deleteRole(@PathVariable long roleId){
-        this.rolesService.deleteRole(roleId);
+    // USER can update a Goal!
+    public void deleteGoal(@PathVariable long goalId){
+        this.goalsService.deleteGoal(goalId);
     }
+
 
 }

@@ -5,8 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import oBeta.PiggyWebBank.payloads.FixedTransactionDTO;
-import oBeta.PiggyWebBank.payloads.VariableTransactionDTO;
+import oBeta.PiggyWebBank.payloads.admin.VariableTransactionDTO;
 
 import java.time.LocalDateTime;
 

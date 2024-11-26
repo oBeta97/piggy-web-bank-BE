@@ -1,10 +1,10 @@
-package oBeta.PiggyWebBank.controllers;
+package oBeta.PiggyWebBank.controllers.admin;
 
 
 import oBeta.PiggyWebBank.entities.TransactionCategory;
 import oBeta.PiggyWebBank.exceptions.BadRequestException;
-import oBeta.PiggyWebBank.payloads.BaseTransactionCategoryDTO;
-import oBeta.PiggyWebBank.payloads.UserTransactionCategoryDTO;
+import oBeta.PiggyWebBank.payloads.admin.BaseTransactionCategoryDTO;
+import oBeta.PiggyWebBank.payloads.admin.UserTransactionCategoryDTO;
 import oBeta.PiggyWebBank.services.TransactionCategoriesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

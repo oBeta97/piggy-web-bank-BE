@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import oBeta.PiggyWebBank.exceptions.NotAllowedException;
 import oBeta.PiggyWebBank.payloads.signin.SigninDTO;
-import oBeta.PiggyWebBank.payloads.UserDTO;
+import oBeta.PiggyWebBank.payloads.admin.UserDTO;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.GrantedAuthority;

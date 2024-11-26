@@ -1,10 +1,9 @@
-package oBeta.PiggyWebBank.controllers;
+package oBeta.PiggyWebBank.controllers.developer;
 
-
-import oBeta.PiggyWebBank.entities.Goal;
+import oBeta.PiggyWebBank.entities.Feature;
 import oBeta.PiggyWebBank.exceptions.BadRequestException;
-import oBeta.PiggyWebBank.payloads.GoalDTO;
-import oBeta.PiggyWebBank.services.GoalsService;
+import oBeta.PiggyWebBank.payloads.developer.FeatureDTO;
+import oBeta.PiggyWebBank.services.FeaturesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -15,58 +14,56 @@ import org.springframework.web.bind.annotation.*;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/goals")
-public class GoalsController {
+@RequestMapping("/features")
+public class FeaturesController {
 
     @Autowired
-    private GoalsService goalsService;
-
+    private FeaturesService featuresService;
 
     @GetMapping
-    public Page<Goal> getAllGoals(
+    public Page<Feature> getAllFeatures(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy
     ){
-        return this.goalsService.getAllGoals(page, size, sortBy);
+        return this.featuresService.getPageOfAllFeatures(page, size, sortBy);
     }
 
-    @GetMapping("/{goalId}")
-    public Goal getGoalById(@PathVariable long goalId){
-        return this.goalsService.getGoalById(goalId);
+    @GetMapping("/{featureId}")
+    public Feature getFeatureById(@PathVariable long featureId){
+        return this.featuresService.getFeatureById(featureId);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    // USER can save a new Goal!
-    public Goal saveNewGoal(@RequestBody @Validated GoalDTO body, BindingResult validationResult){
+    // ONLY DEV can save a new Feature!
+    public Feature saveNewFeature(@RequestBody @Validated FeatureDTO body, BindingResult validationResult){
         if (validationResult.hasErrors()) {
             String message = validationResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage())
                     .collect(Collectors.joining(";"));
             throw new BadRequestException(message);
         }
 
-        return this.goalsService.saveNewGoal(body);
+        return this.featuresService.saveNewFeature(body);
     }
 
-    @PutMapping("/{goalId}")
-    // USER can update a Goal!
-    public Goal updateGoal(@PathVariable long goalId, @RequestBody @Validated GoalDTO body, BindingResult validationResult){
+    @PutMapping("/{featureId}")
+    // ONLY DEV can update a Feature!
+    public Feature updateFeature(@PathVariable long featureId, @RequestBody @Validated FeatureDTO body, BindingResult validationResult){
         if (validationResult.hasErrors()) {
             String message = validationResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage())
                     .collect(Collectors.joining(";"));
             throw new BadRequestException(message);
         }
 
-        return this.goalsService.updateGoal(goalId, body);
+        return this.featuresService.updateFeature(featureId, body);
     }
 
-    @DeleteMapping("/{goalId}")
+    @DeleteMapping("/{featureId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    // USER can update a Goal!
-    public void deleteGoal(@PathVariable long goalId){
-        this.goalsService.deleteGoal(goalId);
+    // ONLY DEV can delete a Feature!
+    public void deleteFeature(@PathVariable long featureId){
+        this.featuresService.deleteFeature(featureId);
     }
-
 
 }
