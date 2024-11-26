@@ -1,4 +1,4 @@
-package oBeta.PiggyWebBank.payloads;
+package oBeta.PiggyWebBank.payloads.developer;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

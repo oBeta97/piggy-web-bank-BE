@@ -1,17 +1,15 @@
-package oBeta.PiggyWebBank.controllers;
+package oBeta.PiggyWebBank.controllers.me;
 
 
 import oBeta.PiggyWebBank.entities.FixedTransaction;
 import oBeta.PiggyWebBank.entities.User;
-import oBeta.PiggyWebBank.payloads.FixedTransactionDTO;
+import oBeta.PiggyWebBank.payloads.admin.FixedTransactionDTO;
 import oBeta.PiggyWebBank.security.UserValidation;
 import oBeta.PiggyWebBank.security.ValidationControl;
 import oBeta.PiggyWebBank.services.FixedTransactionsService;
 import oBeta.PiggyWebBank.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

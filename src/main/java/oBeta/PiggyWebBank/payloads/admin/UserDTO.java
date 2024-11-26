@@ -1,4 +1,4 @@
-package oBeta.PiggyWebBank.payloads;
+package oBeta.PiggyWebBank.payloads.admin;
 
 import jakarta.validation.constraints.*;
 

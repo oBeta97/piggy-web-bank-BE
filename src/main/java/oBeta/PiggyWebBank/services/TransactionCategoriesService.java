@@ -1,14 +1,11 @@
 package oBeta.PiggyWebBank.services;
 
-import oBeta.PiggyWebBank.entities.Feature;
-import oBeta.PiggyWebBank.entities.Role;
 import oBeta.PiggyWebBank.entities.TransactionCategory;
 import oBeta.PiggyWebBank.entities.User;
 import oBeta.PiggyWebBank.exceptions.BadRequestException;
 import oBeta.PiggyWebBank.exceptions.NotFoundException;
-import oBeta.PiggyWebBank.payloads.BaseTransactionCategoryDTO;
-import oBeta.PiggyWebBank.payloads.RoleDTO;
-import oBeta.PiggyWebBank.payloads.UserTransactionCategoryDTO;
+import oBeta.PiggyWebBank.payloads.admin.BaseTransactionCategoryDTO;
+import oBeta.PiggyWebBank.payloads.admin.UserTransactionCategoryDTO;
 import oBeta.PiggyWebBank.repositories.TransactionCategoriesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

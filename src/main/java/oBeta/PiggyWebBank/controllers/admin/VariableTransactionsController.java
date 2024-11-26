@@ -1,9 +1,9 @@
-package oBeta.PiggyWebBank.controllers;
+package oBeta.PiggyWebBank.controllers.admin;
 
 
 import oBeta.PiggyWebBank.entities.VariableTransaction;
 import oBeta.PiggyWebBank.exceptions.BadRequestException;
-import oBeta.PiggyWebBank.payloads.VariableTransactionDTO;
+import oBeta.PiggyWebBank.payloads.admin.VariableTransactionDTO;
 import oBeta.PiggyWebBank.services.VariableTransactionsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,7 +12,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController

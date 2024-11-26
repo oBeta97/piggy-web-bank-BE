@@ -1,9 +1,6 @@
-package oBeta.PiggyWebBank.payloads;
+package oBeta.PiggyWebBank.payloads.developer;
 
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-
-import java.util.List;
 
 public record FeatureDTO(
         @NotEmpty(message = "Feature name must be set!")

@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import oBeta.PiggyWebBank.interfaces.UsersEntity;
-import oBeta.PiggyWebBank.payloads.FixedTransactionDTO;
+import oBeta.PiggyWebBank.payloads.admin.FixedTransactionDTO;
 
 import java.util.UUID;
 

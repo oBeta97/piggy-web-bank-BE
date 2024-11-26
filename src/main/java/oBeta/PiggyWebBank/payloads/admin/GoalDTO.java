@@ -1,4 +1,4 @@
-package oBeta.PiggyWebBank.payloads;
+package oBeta.PiggyWebBank.payloads.admin;
 
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotEmpty;
@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 public record GoalDTO(
         @NotEmpty(message = "Name must be set!")

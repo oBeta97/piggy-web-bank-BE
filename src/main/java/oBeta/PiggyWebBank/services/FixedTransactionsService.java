@@ -4,7 +4,7 @@ import oBeta.PiggyWebBank.entities.FixedTransaction;
 import oBeta.PiggyWebBank.entities.User;
 import oBeta.PiggyWebBank.exceptions.BadRequestException;
 import oBeta.PiggyWebBank.exceptions.NotFoundException;
-import oBeta.PiggyWebBank.payloads.FixedTransactionDTO;
+import oBeta.PiggyWebBank.payloads.admin.FixedTransactionDTO;
 import oBeta.PiggyWebBank.repositories.FixedTransactionsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

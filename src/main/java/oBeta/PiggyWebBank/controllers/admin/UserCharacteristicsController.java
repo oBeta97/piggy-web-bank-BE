@@ -1,9 +1,9 @@
-package oBeta.PiggyWebBank.controllers;
+package oBeta.PiggyWebBank.controllers.admin;
 
 
 import oBeta.PiggyWebBank.entities.UserCharacteristic;
 import oBeta.PiggyWebBank.exceptions.BadRequestException;
-import oBeta.PiggyWebBank.payloads.UserCharacteristicDTO;
+import oBeta.PiggyWebBank.payloads.admin.UserCharacteristicDTO;
 import oBeta.PiggyWebBank.services.UserCharacteristicsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

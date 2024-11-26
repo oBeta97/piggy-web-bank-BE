@@ -4,7 +4,7 @@ import oBeta.PiggyWebBank.entities.User;
 import oBeta.PiggyWebBank.entities.UserCharacteristic;
 import oBeta.PiggyWebBank.exceptions.BadRequestException;
 import oBeta.PiggyWebBank.exceptions.NotFoundException;
-import oBeta.PiggyWebBank.payloads.UserCharacteristicDTO;
+import oBeta.PiggyWebBank.payloads.admin.UserCharacteristicDTO;
 import oBeta.PiggyWebBank.repositories.UserCharacteristicsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

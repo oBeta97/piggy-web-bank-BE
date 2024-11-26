@@ -1,9 +1,9 @@
-package oBeta.PiggyWebBank.controllers;
+package oBeta.PiggyWebBank.controllers.admin;
 
 
 import oBeta.PiggyWebBank.entities.FixedTransaction;
 import oBeta.PiggyWebBank.exceptions.BadRequestException;
-import oBeta.PiggyWebBank.payloads.FixedTransactionDTO;
+import oBeta.PiggyWebBank.payloads.admin.FixedTransactionDTO;
 import oBeta.PiggyWebBank.security.ValidationControl;
 import oBeta.PiggyWebBank.services.FixedTransactionsService;
 import org.springframework.beans.factory.annotation.Autowired;
