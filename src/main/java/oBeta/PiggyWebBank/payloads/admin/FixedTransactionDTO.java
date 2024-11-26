@@ -1,6 +1,7 @@
 package oBeta.PiggyWebBank.payloads.admin;
 
 import jakarta.validation.constraints.*;
+import oBeta.PiggyWebBank.interfaces.BaseFixedTransactionDTO;
 
 public record FixedTransactionDTO (
         @NotEmpty(message = "Name name must be set!")
@@ -13,4 +14,4 @@ public record FixedTransactionDTO (
         @NotNull(message = "User id must be set!")
         @Pattern(regexp = "^[a-fA-F0-9\\-]{36}$", message = "Invalid UUID format!")
         String user_id
-) {}
+) implements BaseFixedTransactionDTO {}
