@@ -8,6 +8,8 @@ import oBeta.PiggyWebBank.payloads.login.LoginDTO;
 import oBeta.PiggyWebBank.payloads.login.LoginResponseDTO;
 import oBeta.PiggyWebBank.payloads.signin.SigninResponseDTO;
 import oBeta.PiggyWebBank.services.AuthService;
+import oBeta.PiggyWebBank.services.MonthHistoriesService;
+import oBeta.PiggyWebBank.services.UserCharacteristicsService;
 import oBeta.PiggyWebBank.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,6 +28,12 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserCharacteristicsService userCharacteristicsService;
+
+    @Autowired
+    private MonthHistoriesService monthHistoriesService;
 
     @PostMapping("/login")
     public LoginResponseDTO login (@RequestBody @Validated LoginDTO body, BindingResult validationResult){
@@ -50,6 +58,9 @@ public class AuthController {
         }
 
         User userInserted = this.userService.signin(dto);
+
+        this.userCharacteristicsService.saveNewUserCharacteristic("€", userInserted);
+        this.monthHistoriesService.saveNewMonthHistory(userInserted);
 
         return new SigninResponseDTO(
                 userInserted.getName(),

@@ -4,6 +4,7 @@ package oBeta.PiggyWebBank.controllers;
 import oBeta.PiggyWebBank.entities.FixedTransaction;
 import oBeta.PiggyWebBank.exceptions.BadRequestException;
 import oBeta.PiggyWebBank.payloads.FixedTransactionDTO;
+import oBeta.PiggyWebBank.security.ValidationControl;
 import oBeta.PiggyWebBank.services.FixedTransactionsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,6 +22,9 @@ public class FixedTransactionController {
     @Autowired
     private FixedTransactionsService fixedTransactionsService;
 
+    @Autowired
+    private ValidationControl validationControl;
+
     @GetMapping
     public Page<FixedTransaction> getAllFixedTransaction(
             @RequestParam(defaultValue = "0") int page,
@@ -31,18 +35,14 @@ public class FixedTransactionController {
     }
 
     @GetMapping("/{fixedTransactionId}")
-    public FixedTransaction getFixedTransactionById(@PathVariable long featureId){
-        return this.fixedTransactionsService.getFixedTransactionById(featureId);
+    public FixedTransaction getFixedTransactionById(@PathVariable long fixedTransactionId){
+        return this.fixedTransactionsService.getFixedTransactionById(fixedTransactionId);
     }
 
 
     @PostMapping
     public FixedTransaction saveNewFixedTransaction(@RequestBody @Validated FixedTransactionDTO body, BindingResult validationResult){
-        if (validationResult.hasErrors()) {
-            String message = validationResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage())
-                    .collect(Collectors.joining(";"));
-            throw new BadRequestException(message);
-        }
+        this.validationControl.checkErrors(validationResult);
 
         return this.fixedTransactionsService.saveNewFixedTransaction(body);
     }

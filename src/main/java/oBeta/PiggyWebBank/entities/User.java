@@ -40,6 +40,7 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     @Setter(AccessLevel.NONE)
+    @JsonIgnore
     private String password;
 
     @Column(name = "last_password_update", nullable = false)

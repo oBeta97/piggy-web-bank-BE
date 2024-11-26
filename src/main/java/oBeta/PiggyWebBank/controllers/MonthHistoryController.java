@@ -23,9 +23,9 @@ public class MonthHistoryController {
         return this.monthHistoriesService.getAllMonthHistory(page, size, sortBy);
     }
 
-    @GetMapping("/{featureId}")
-    public MonthHistory getMonthHistoryById(@PathVariable long featureId){
-        return this.monthHistoriesService.getMonthHistoryById(featureId);
+    @GetMapping("/{monthHistoryId}")
+    public MonthHistory getMonthHistoryById(@PathVariable long monthHistoryId){
+        return this.monthHistoriesService.getMonthHistoryById(monthHistoryId);
     }
 
 }
