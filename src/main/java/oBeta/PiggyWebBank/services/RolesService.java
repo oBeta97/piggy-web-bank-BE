@@ -38,6 +38,11 @@ public class RolesService {
                 .orElseThrow(() -> new NotFoundException("Role with id " + idToFind + " not found!" ));
     }
 
+    public Role getUserRole(){
+        return this.rolesRepo.findByName("USER")
+                .orElseThrow(() -> new NotFoundException("User role not found!"));
+    }
+
     public List<Role> getRolesByList(List<Long> idList){
 
         List<Role> res = new ArrayList<>();

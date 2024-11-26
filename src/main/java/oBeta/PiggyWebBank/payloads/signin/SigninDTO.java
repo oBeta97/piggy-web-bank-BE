@@ -1,8 +1,9 @@
-package oBeta.PiggyWebBank.payloads;
+package oBeta.PiggyWebBank.payloads.signin;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 
-public record UserDTO(
+public record SigninDTO(
         String name,
         String surname,
         @NotEmpty(message = "Username must be set!")
@@ -15,8 +16,6 @@ public record UserDTO(
                 regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&_])[A-Za-z\\d@$!%*?&_]{8,}$",
                 message = "The password is not secure enough!"
         )
-        String password,
-        @NotNull(message = "Role Id must be set!")
-        long role_id
+        String password
 ) {
 }

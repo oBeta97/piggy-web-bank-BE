@@ -50,6 +50,13 @@ public class JWTCheckerFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return new AntPathMatcher().match("/auth/**", request.getServletPath());
+        String path = request.getServletPath();
+        AntPathMatcher pathMatcher = new AntPathMatcher();
+
+        // Escludi gli endpoint di autenticazione e Swagger
+        return pathMatcher.match("/auth/**", path) ||
+                pathMatcher.match("/swagger-ui/**", path) ||
+                pathMatcher.match("/v3/api-docs/**", path);
     }
+
 }

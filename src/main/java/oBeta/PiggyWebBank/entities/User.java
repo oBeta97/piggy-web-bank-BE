@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import oBeta.PiggyWebBank.exceptions.NotAllowedException;
+import oBeta.PiggyWebBank.payloads.signin.SigninDTO;
 import oBeta.PiggyWebBank.payloads.UserDTO;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -82,10 +83,20 @@ public class User implements UserDetails {
         this.name = name;
     }
 
-    public User(UserDTO dto, Role role){
+    public User(UserDTO dto, String password, Role role){
         this.email = dto.email();
         this.username = dto.username();
-        this.password = dto.password();
+        this.password = password;
+        this.lastPasswordUpdate = LocalDate.now();
+        this.name = dto.name();
+        this.surname = dto.surname();
+        this.role = role;
+    }
+
+    public User(SigninDTO dto, String password, Role role){
+        this.email = dto.email();
+        this.username = dto.username();
+        this.password = password;
         this.lastPasswordUpdate = LocalDate.now();
         this.name = dto.name();
         this.surname = dto.surname();

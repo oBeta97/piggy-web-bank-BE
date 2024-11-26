@@ -1,6 +1,7 @@
 package oBeta.PiggyWebBank.configurations;
 
 import oBeta.PiggyWebBank.security.FilterChainExceptionHandler;
+//import oBeta.PiggyWebBank.security.FilterChainUserValidation;
 import oBeta.PiggyWebBank.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -30,6 +32,8 @@ public class SecurityConfig {
     @Autowired
     private FilterChainExceptionHandler filterChainExceptionHandler;
 
+//    @Autowired
+//    private FilterChainUserValidation filterChainUserValidation;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -41,10 +45,14 @@ public class SecurityConfig {
                 httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         httpSecurity.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
-                authorizationManagerRequestMatcherRegistry.requestMatchers("/**").permitAll()); // Disabilitiamo il 401 che riceviamo di default
+                authorizationManagerRequestMatcherRegistry.requestMatchers("/**").permitAll());
+
 
         httpSecurity.cors(Customizer.withDefaults());
+
+        // Custom filter chain
         httpSecurity.addFilterBefore(filterChainExceptionHandler, LogoutFilter.class);
+//        httpSecurity.addFilterBefore(filterChainUserValidation, BasicAuthenticationFilter.class);
 
         return httpSecurity.build();
     }
@@ -57,7 +65,7 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:8080"));
         // Mi creo una whitelist di uno o più indirizzi FRONTEND che voglio che possano accedere a questo backend.
         configuration.setAllowedMethods(List.of("*"));
         configuration.setAllowedHeaders(List.of("*"));
