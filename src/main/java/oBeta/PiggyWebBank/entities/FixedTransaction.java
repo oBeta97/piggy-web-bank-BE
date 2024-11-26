@@ -5,7 +5,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import oBeta.PiggyWebBank.interfaces.UsersEntity;
 import oBeta.PiggyWebBank.payloads.admin.FixedTransactionDTO;
+import oBeta.PiggyWebBank.payloads.me.MeFixedTransactionDTO;
 
 import java.util.UUID;
 
@@ -14,7 +16,7 @@ import java.util.UUID;
 @Setter
 @Getter
 @NoArgsConstructor
-public class FixedTransaction extends Transaction {
+public class FixedTransaction extends Transaction implements UsersEntity {
 
     @Column(nullable = false)
     private short period;
@@ -29,4 +31,13 @@ public class FixedTransaction extends Transaction {
         this.period = dto.period();
     }
 
+    public FixedTransaction(MeFixedTransactionDTO dto, User user){
+        super(dto.name(), dto.amount(), user);
+        this.period = dto.period();
+    }
+
+    @Override
+    public UUID getUserId() {
+        return this.getUser().getId();
+    }
 }

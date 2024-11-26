@@ -5,6 +5,7 @@ import oBeta.PiggyWebBank.entities.User;
 import oBeta.PiggyWebBank.exceptions.BadRequestException;
 import oBeta.PiggyWebBank.exceptions.NotFoundException;
 import oBeta.PiggyWebBank.payloads.admin.FixedTransactionDTO;
+import oBeta.PiggyWebBank.payloads.me.MeFixedTransactionDTO;
 import oBeta.PiggyWebBank.repositories.FixedTransactionsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,6 +40,13 @@ public class FixedTransactionsService {
         return this.fixedTransactionsRepo.findByUser(user);
     }
 
+    public Page<FixedTransaction> getAllFixedTransactionsPagesByUser(User user, int page, int size, String sortBy){
+        if(size > 50) size = 50;
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return this.fixedTransactionsRepo.findByUser(user, pageable);
+    }
+
 
     public List<FixedTransaction> getFixedEarningsByUser(User user){
         return this.fixedTransactionsRepo.findFixedEarningByUser(user);
@@ -70,6 +78,17 @@ public class FixedTransactionsService {
 
         // After save on fixed transaction the month history will be reloaded
         this.monthHistoriesService.reloadLastMonthHistoty(user);
+
+        return res;
+    }
+
+    public FixedTransaction saveMeFixedTransaction(MeFixedTransactionDTO dto, User userLogged){
+        FixedTransaction res =  this.fixedTransactionsRepo.save(
+                new FixedTransaction(dto, userLogged)
+        );
+
+        // After save on fixed transaction the month history will be reloaded
+        this.monthHistoriesService.reloadLastMonthHistoty(userLogged);
 
         return res;
     }

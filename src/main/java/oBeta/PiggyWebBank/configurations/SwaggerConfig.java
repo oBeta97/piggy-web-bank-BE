@@ -14,9 +14,9 @@ public class SwaggerConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Titolo della tua API")
+                        .title("PIGGY WEB BANK!")
                         .version("1.0")
-                        .description("Descrizione della tua API")
+                        .description("Your piggy bank web based!")
                 )
                 .addSecurityItem(
                         new SecurityRequirement()
