@@ -1,15 +1,16 @@
 package oBeta.PiggyWebBank.controllers.me;
 
 
-import oBeta.PiggyWebBank.entities.FixedTransaction;
+import oBeta.PiggyWebBank.entities.Role;
 import oBeta.PiggyWebBank.entities.User;
-import oBeta.PiggyWebBank.payloads.me.MeFixedTransactionDTO;
-import oBeta.PiggyWebBank.security.UserValidation;
+import oBeta.PiggyWebBank.entities.UserCharacteristic;
+import oBeta.PiggyWebBank.payloads.me.MeUserDTO;
+import oBeta.PiggyWebBank.payloads.me.UpdatePasswordDTO;
 import oBeta.PiggyWebBank.security.ValidationControl;
-import oBeta.PiggyWebBank.services.FixedTransactionsService;
+import oBeta.PiggyWebBank.services.UserCharacteristicsService;
 import oBeta.PiggyWebBank.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -20,48 +21,50 @@ import org.springframework.web.bind.annotation.*;
 public class MeController {
 
     @Autowired
-    private FixedTransactionsService fixedTransactionsService;
+    private UserCharacteristicsService userCharacteristicsService;
 
     @Autowired
-    private ValidationControl validationControl;
+    private UserService userService;
 
     @Autowired
-    private UserValidation userValidation;
+    protected ValidationControl validationControl;
 
     @GetMapping
     public User getMe(@AuthenticationPrincipal User loggedUser){
         return loggedUser;
     }
 
-
-    @GetMapping("/fixed-transactions")
-    public Page<FixedTransaction> getAllMeFixedTransaction(
-            @AuthenticationPrincipal User loggedUser,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy
-    ){
-        return this.fixedTransactionsService.getAllFixedTransactionsPagesByUser(loggedUser, page, size, sortBy);
+    @GetMapping("/roles")
+    public Role getMeRole(@AuthenticationPrincipal User loggedUser){
+        return loggedUser.getRole();
     }
 
-    @GetMapping("/fixed-transactions/{fixedTransactionId}")
-    public FixedTransaction getMeFixedTransactionById(@AuthenticationPrincipal User loggedUser, @PathVariable long fixedTransactionId){
-        FixedTransaction res = this.fixedTransactionsService.getFixedTransactionById(fixedTransactionId);
-
-        this.userValidation.validateUser(loggedUser, res, FixedTransaction.class, fixedTransactionId);
-
-        return res;
-    }
-
-    @PostMapping("/fixed-transactions")
-    public FixedTransaction setMeFixedTransaction(
+    @PutMapping
+    public User updateMe(
             @AuthenticationPrincipal User loggedUser,
-            @RequestBody @Validated MeFixedTransactionDTO body,
+            @RequestBody @Validated MeUserDTO body,
             BindingResult validationResult
     ){
         this.validationControl.checkErrors(validationResult);
 
-        return this.fixedTransactionsService.saveMeFixedTransaction(body, loggedUser);
+        return this.userService.updateMeUser(body,loggedUser);
+    }
+
+    @PatchMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateMePassword(
+            @AuthenticationPrincipal User loggedUser,
+            @RequestBody @Validated UpdatePasswordDTO body,
+            BindingResult validationResult
+    ){
+        this.validationControl.checkErrors(validationResult);
+
+        this.userService.updatePassword(body.password(), loggedUser);
+    }
+
+    @GetMapping("/user-characteristics")
+    public UserCharacteristic getMeUserCharacteristics(@AuthenticationPrincipal User loggedUser){
+        return this.userCharacteristicsService.getUserCharacteristicByUser(loggedUser);
     }
 
 }

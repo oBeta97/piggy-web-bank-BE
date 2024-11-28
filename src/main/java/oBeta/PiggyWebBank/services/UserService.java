@@ -4,6 +4,7 @@ import oBeta.PiggyWebBank.entities.Role;
 import oBeta.PiggyWebBank.entities.User;
 import oBeta.PiggyWebBank.exceptions.BadRequestException;
 import oBeta.PiggyWebBank.exceptions.NotFoundException;
+import oBeta.PiggyWebBank.payloads.me.MeUserDTO;
 import oBeta.PiggyWebBank.payloads.signin.SigninDTO;
 import oBeta.PiggyWebBank.payloads.admin.UserDTO;
 import oBeta.PiggyWebBank.repositories.UsersRepository;
@@ -119,6 +120,44 @@ public class UserService {
         return this.usersRepo.save(found);
     }
 
+    public User updateMeUser (MeUserDTO dto, User loggedUser){
+
+        if (!loggedUser.getUsername().equals(dto.username())) {
+            Optional<User> searchUserByUsername = usersRepo.findByUsername(dto.username());
+            if (searchUserByUsername.isPresent() && searchUserByUsername.get().getId() != loggedUser.getId()){
+                throw new BadRequestException("User with username " + dto.username() + " already exist!");
+            }
+        }
+
+        if (!loggedUser.getEmail().equals(dto.email())) {
+            Optional<User> searchUserByEmail = usersRepo.findByEmail(dto.email());
+            if (searchUserByEmail.isPresent() && searchUserByEmail.get().getId() != loggedUser.getId()){
+                throw new BadRequestException("User with email " + dto.email() + " already exist!");
+            }
+        }
+
+        if(this.isFoundEqualsToDTO(loggedUser, dto))
+            return loggedUser;
+
+        loggedUser.setName(dto.name());
+        loggedUser.setSurname(dto.surname());
+        loggedUser.setUsername(dto.username());
+        loggedUser.setEmail(dto.email());
+
+        return this.usersRepo.save(loggedUser);
+    }
+
+
+    public void updatePassword(String newPassword, User user){
+
+        if(bcrypt.matches(newPassword, user.getPassword()))
+            throw new BadRequestException("The password must be different from the existing one");
+
+        user.setNewPassword(newPassword);
+
+        this.usersRepo.save(user);
+    }
+
 
     public void deleteUser (UUID idToDelete){
         this.usersRepo.delete(
@@ -132,6 +171,13 @@ public class UserService {
                 found.getUsername().equals(dto.username()) &&
                 found.getEmail().equals(dto.email()) &&
                 found.getRole().getId() == dto.role_id();
+    }
+
+    private boolean isFoundEqualsToDTO (User found, MeUserDTO dto) {
+        return found.getName().equals(dto.name()) &&
+                found.getSurname().equals(dto.surname()) &&
+                found.getUsername().equals(dto.username()) &&
+                found.getEmail().equals(dto.email());
     }
 
 }

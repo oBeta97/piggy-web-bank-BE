@@ -1,11 +1,13 @@
 package oBeta.PiggyWebBank.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import oBeta.PiggyWebBank.exceptions.BadRequestException;
 import oBeta.PiggyWebBank.exceptions.NotAllowedException;
 import oBeta.PiggyWebBank.payloads.signin.SigninDTO;
 import oBeta.PiggyWebBank.payloads.admin.UserDTO;
@@ -23,6 +25,15 @@ import java.util.stream.Collectors;
 @Table(name = "users")
 @Data
 @NoArgsConstructor
+@JsonIgnoreProperties(
+        {
+            "authorities",
+            "enabled",
+            "accountNonExpired",
+            "accountNonLocked",
+            "credentialsNonExpired"
+        }
+)
 public class User implements UserDetails {
 
     @Id
@@ -45,6 +56,7 @@ public class User implements UserDetails {
 
     @Column(name = "last_password_update", nullable = false)
     @Setter(AccessLevel.NONE)
+    @JsonIgnore
     private LocalDate lastPasswordUpdate;
 
     @JsonIgnore
@@ -105,9 +117,6 @@ public class User implements UserDetails {
     }
 
     public void setNewPassword(String _password){
-
-        // avoid to set the same password when updated
-        if(_password.equals(this.getPassword())) throw new NotAllowedException("The password must be different from the existing one");
 
         this.password = _password;
         this.lastPasswordUpdate = LocalDate.now();

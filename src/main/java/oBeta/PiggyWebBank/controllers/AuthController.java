@@ -7,6 +7,7 @@ import oBeta.PiggyWebBank.payloads.signin.SigninDTO;
 import oBeta.PiggyWebBank.payloads.login.LoginDTO;
 import oBeta.PiggyWebBank.payloads.login.LoginResponseDTO;
 import oBeta.PiggyWebBank.payloads.signin.SigninResponseDTO;
+import oBeta.PiggyWebBank.security.ValidationControl;
 import oBeta.PiggyWebBank.services.AuthService;
 import oBeta.PiggyWebBank.services.MonthHistoriesService;
 import oBeta.PiggyWebBank.services.UserCharacteristicsService;
@@ -35,13 +36,12 @@ public class AuthController {
     @Autowired
     private MonthHistoriesService monthHistoriesService;
 
+    @Autowired
+    private ValidationControl validationControl;
+
     @PostMapping("/login")
     public LoginResponseDTO login (@RequestBody @Validated LoginDTO body, BindingResult validationResult){
-        if (validationResult.hasErrors()) {
-            String message = validationResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage())
-                    .collect(Collectors.joining(";"));
-            throw new BadRequestException(message);
-        }
+        this.validationControl.checkErrors(validationResult);
 
         return new LoginResponseDTO(
                 this.authService.checkLoginCredentials(body)

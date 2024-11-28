@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
+import oBeta.PiggyWebBank.interfaces.BaseFixedTransactionDTO;
 
 
 public record MeFixedTransactionDTO(
@@ -14,4 +15,4 @@ public record MeFixedTransactionDTO(
         @NotNull(message = "Period must be set!")
         @Positive(message = "Period must be more than 0!")
         short period
-) {}
+) implements BaseFixedTransactionDTO {}

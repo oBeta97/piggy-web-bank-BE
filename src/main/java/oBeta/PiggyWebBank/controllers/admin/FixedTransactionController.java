@@ -66,7 +66,7 @@ public class FixedTransactionController {
 
         FixedTransaction fixedTransaction = this.getFixedTransactionById(fixedTransactionId);
 
-        this.fixedTransactionsService.delteFixedTransaction(fixedTransactionId, fixedTransaction.getUser());
+        this.fixedTransactionsService.deleteFixedTransaction(fixedTransactionId, fixedTransaction.getUser());
     }
 
 

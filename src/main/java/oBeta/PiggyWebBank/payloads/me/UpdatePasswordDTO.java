@@ -1,12 +1,10 @@
-package oBeta.PiggyWebBank.payloads.login;
+package oBeta.PiggyWebBank.payloads.me;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import oBeta.PiggyWebBank.regex.Regex;
 
-public record LoginDTO(
-        @NotEmpty(message = "Username must be set!")
-        String username,
+public record UpdatePasswordDTO(
         @NotEmpty(message = "Password must be set!")
         @Pattern(
                 regexp = Regex.PASSWORD,

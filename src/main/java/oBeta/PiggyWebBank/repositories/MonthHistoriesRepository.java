@@ -2,6 +2,8 @@ package oBeta.PiggyWebBank.repositories;
 
 import oBeta.PiggyWebBank.entities.MonthHistory;
 import oBeta.PiggyWebBank.entities.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -14,6 +16,10 @@ import java.util.UUID;
 public interface MonthHistoriesRepository extends JpaRepository<MonthHistory, Long> {
 
     Optional<MonthHistory> findByMonthAndYearAndUser(long month, long year, User user);
+
+    Page<MonthHistory> findByUser(User user, Pageable pageable);
+
+    Optional<MonthHistory> findByIdAndUser(long id, User user);
 
     @Query("SELECT mh " +
             "FROM MonthHistory mh " +
