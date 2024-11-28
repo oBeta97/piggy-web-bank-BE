@@ -4,7 +4,7 @@ import oBeta.PiggyWebBank.entities.Feature;
 import oBeta.PiggyWebBank.entities.Role;
 import oBeta.PiggyWebBank.exceptions.BadRequestException;
 import oBeta.PiggyWebBank.exceptions.NotFoundException;
-import oBeta.PiggyWebBank.payloads.RoleDTO;
+import oBeta.PiggyWebBank.payloads.developer.RoleDTO;
 import oBeta.PiggyWebBank.repositories.RolesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class RolesService {
@@ -36,6 +35,11 @@ public class RolesService {
     public Role getRoleById (long idToFind){
         return this.rolesRepo.findById(idToFind)
                 .orElseThrow(() -> new NotFoundException("Role with id " + idToFind + " not found!" ));
+    }
+
+    public Role getUserRole(){
+        return this.rolesRepo.findByName("USER")
+                .orElseThrow(() -> new NotFoundException("User role not found!"));
     }
 
     public List<Role> getRolesByList(List<Long> idList){
