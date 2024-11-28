@@ -97,7 +97,7 @@ public class TransactionCategoriesController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     // USER can update a TransactionCategory!
     public void deleteTransactionCategory(@PathVariable long transactionCategoryId){
-        this.transactionCategoriesService.deleteUserTransactionCategory(transactionCategoryId);
+        this.transactionCategoriesService.deleteUserTransactionCategoryAdmin(transactionCategoryId);
     }
 
     @DeleteMapping("/base/{transactionCategoryId}")
@@ -111,7 +111,7 @@ public class TransactionCategoriesController {
             throw new BadRequestException("Transaction category " + transactionCategory.getName() + " is linked to user " + transactionCategory.getUser().getUsername());
 
 
-        this.transactionCategoriesService.deleteUserTransactionCategory(transactionCategoryId);
+        this.transactionCategoriesService.deleteUserTransactionCategoryAdmin(transactionCategoryId);
     }
 
 }
