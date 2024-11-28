@@ -1,6 +1,7 @@
 package oBeta.PiggyWebBank.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -24,6 +25,15 @@ import java.util.stream.Collectors;
 @Table(name = "users")
 @Data
 @NoArgsConstructor
+@JsonIgnoreProperties(
+        {
+            "authorities",
+            "enabled",
+            "accountNonExpired",
+            "accountNonLocked",
+            "credentialsNonExpired"
+        }
+)
 public class User implements UserDetails {
 
     @Id
@@ -46,6 +56,7 @@ public class User implements UserDetails {
 
     @Column(name = "last_password_update", nullable = false)
     @Setter(AccessLevel.NONE)
+    @JsonIgnore
     private LocalDate lastPasswordUpdate;
 
     @JsonIgnore
