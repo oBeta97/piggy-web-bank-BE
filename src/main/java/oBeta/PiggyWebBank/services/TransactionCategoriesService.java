@@ -46,6 +46,10 @@ public class TransactionCategoriesService {
         return this.transactionCategoriesRepo.findAllTransactionCategoryOfAnUser(user);
     }
 
+    public List<TransactionCategory> getTransactionCategoryOfUserOnly(User user){
+        return this.transactionCategoriesRepo.findTransactionCategoryByUser(user);
+    }
+
     // ONLY admin users can use this method
     public TransactionCategory saveNewBaseTransactionCategory(BaseTransactionCategoryDTO dto){
         return this.transactionCategoriesRepo.save(
@@ -123,13 +127,19 @@ public class TransactionCategoriesService {
         this.transactionCategoriesRepo.delete(found);
     }
 
-//    TODO - togliere i commenti, sono predisposizioni per il controllo del JWT
-    public void deleteUserTransactionCategory(long idToDelete/*, User user*/){
+    public void deleteUserTransactionCategoryAdmin(long idToDelete/*, User user*/){
 //        User u = this.userService.getUserById(user.getId());
 
         TransactionCategory found = this.getTransactionCategoryById(idToDelete);
 
 //        if (u.getId() != found.getUser().getId()) throw new BadRequestException("Request error! Wrong user");
+
+        this.transactionCategoriesRepo.delete(found);
+    }
+
+
+    public void deleteUserTransactionCategory(long idToDelete, User user){
+        TransactionCategory found = this.getTransactionCategoryById(idToDelete);
 
         this.transactionCategoriesRepo.delete(found);
     }

@@ -3,7 +3,7 @@ package oBeta.PiggyWebBank.payloads.me;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
-public record MeUserTransactionCategoryDTO(
+public record MeTransactionCategoryDTO(
 
         @NotEmpty(message = "Name must be set!")
         String name,

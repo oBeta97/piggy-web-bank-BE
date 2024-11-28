@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import oBeta.PiggyWebBank.interfaces.UsersEntity;
 import oBeta.PiggyWebBank.payloads.admin.VariableTransactionDTO;
 
 import java.time.LocalDateTime;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @NoArgsConstructor
-public class VariableTransaction extends Transaction{
+public class VariableTransaction extends Transaction implements UsersEntity {
 
     @Column(name = "transaction_dt", nullable = false)
     private LocalDateTime transactionDt;

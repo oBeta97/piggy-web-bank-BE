@@ -16,16 +16,16 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/me/fixed-transactions")
-public class MeFixedController{
+public class MeFixedTransactionsController {
 
     @Autowired
-    protected FixedTransactionsService fixedTransactionsService;
+    private FixedTransactionsService fixedTransactionsService;
 
     @Autowired
-    protected ValidationControl validationControl;
+    private ValidationControl validationControl;
 
     @Autowired
-    protected UserValidation userValidation;
+    private UserValidation userValidation;
 
     @GetMapping
     public Page<FixedTransaction> getAllMeFixedTransaction(

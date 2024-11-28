@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/me/month-histories")
-public class MeMonthHistoryController {
+public class MeMonthHistoriesController {
 
     @Autowired
     private MonthHistoriesService monthHistoriesService;

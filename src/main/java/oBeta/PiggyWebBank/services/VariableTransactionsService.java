@@ -38,6 +38,14 @@ public class VariableTransactionsService {
         return this.variableTransactionsRepo.findAll(pageable);
     }
 
+    public Page<VariableTransaction> getAllUserVariableTransactions(int page, int size, String sortBy, User user) {
+        if(size > 50) size = 50;
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return this.variableTransactionsRepo.findAllByUser(user, pageable);
+    }
+
+
     public VariableTransaction getVariableTransactionById(long idToFind){
         return this.variableTransactionsRepo.findById(idToFind)
                 .orElseThrow(() ->
@@ -95,7 +103,11 @@ public class VariableTransactionsService {
         found.setName(dto.name());
         found.setTransactionCategory(transactionCategory);
 
-        return this.variableTransactionsRepo.save(found);
+        VariableTransaction res =  this.variableTransactionsRepo.save(found);
+
+        monthHistoriesService.reloadLastMonthHistoty(res.getUser());
+
+        return res;
     }
 
     public void delteVariableTransaction(long idToDelete, User u){
