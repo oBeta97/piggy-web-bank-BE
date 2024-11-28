@@ -27,7 +27,7 @@ public class MeController {
     private UserService userService;
 
     @Autowired
-    protected ValidationControl validationControl;
+    private ValidationControl validationControl;
 
     @GetMapping
     public User getMe(@AuthenticationPrincipal User loggedUser){

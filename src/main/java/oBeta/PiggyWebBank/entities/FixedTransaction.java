@@ -35,9 +35,4 @@ public class FixedTransaction extends Transaction implements UsersEntity {
         super(dto.name(), dto.amount(), user);
         this.period = dto.period();
     }
-
-    @Override
-    public UUID getUserId() {
-        return this.getUser().getId();
-    }
 }

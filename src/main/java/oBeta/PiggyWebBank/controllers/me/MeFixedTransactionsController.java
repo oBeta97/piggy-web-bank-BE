@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/me/fixed-transactions")
-public class MeFixedController{
+public class MeFixedTransactionsController {
 
     @Autowired
     protected FixedTransactionsService fixedTransactionsService;

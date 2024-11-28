@@ -1,8 +1,14 @@
 package oBeta.PiggyWebBank.interfaces;
 
+import oBeta.PiggyWebBank.entities.User;
+
 import java.util.UUID;
 
 public interface UsersEntity {
 
-    public UUID getUserId();
+    User getUser();
+
+    default UUID getUserId(){
+        return this.getUser().getId();
+    };
 }
