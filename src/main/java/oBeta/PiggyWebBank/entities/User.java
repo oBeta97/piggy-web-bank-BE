@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import oBeta.PiggyWebBank.exceptions.BadRequestException;
 import oBeta.PiggyWebBank.exceptions.NotAllowedException;
 import oBeta.PiggyWebBank.payloads.signin.SigninDTO;
 import oBeta.PiggyWebBank.payloads.admin.UserDTO;
@@ -105,9 +106,6 @@ public class User implements UserDetails {
     }
 
     public void setNewPassword(String _password){
-
-        // avoid to set the same password when updated
-        if(_password.equals(this.getPassword())) throw new NotAllowedException("The password must be different from the existing one");
 
         this.password = _password;
         this.lastPasswordUpdate = LocalDate.now();

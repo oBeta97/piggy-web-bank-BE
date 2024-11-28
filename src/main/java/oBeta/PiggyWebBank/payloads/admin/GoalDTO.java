@@ -4,6 +4,7 @@ import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import oBeta.PiggyWebBank.regex.Regex;
 
 import java.time.LocalDate;
 
@@ -16,6 +17,6 @@ public record GoalDTO(
         @FutureOrPresent(message = "Expirity must be in the future!")
         LocalDate expirityDt,
         @NotNull(message = "User UUID must be set!")
-        @Pattern(regexp = "^[a-fA-F0-9\\-]{36}$", message = "Invalid UUID format!")
+        @Pattern(regexp = Regex.UUID, message = "Invalid UUID format!")
         String user_id
 ) {}

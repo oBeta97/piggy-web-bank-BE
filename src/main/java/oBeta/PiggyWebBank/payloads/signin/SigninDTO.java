@@ -2,6 +2,7 @@ package oBeta.PiggyWebBank.payloads.signin;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
+import oBeta.PiggyWebBank.regex.Regex;
 
 public record SigninDTO(
         String name,
@@ -13,7 +14,7 @@ public record SigninDTO(
         String email,
         @NotEmpty(message = "Password must be set!")
         @Pattern(
-                regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&_])[A-Za-z\\d@$!%*?&_]{8,}$",
+                regexp = Regex.PASSWORD,
                 message = "The password is not secure enough!"
         )
         String password
