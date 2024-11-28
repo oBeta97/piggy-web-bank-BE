@@ -6,14 +6,15 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import oBeta.PiggyWebBank.payloads.BaseTransactionCategoryDTO;
-import oBeta.PiggyWebBank.payloads.UserTransactionCategoryDTO;
+import oBeta.PiggyWebBank.interfaces.UsersEntity;
+import oBeta.PiggyWebBank.payloads.admin.BaseTransactionCategoryDTO;
+import oBeta.PiggyWebBank.payloads.admin.UserTransactionCategoryDTO;
 
 @Entity
 @Table(name = "transaction_categories")
 @Data
 @NoArgsConstructor
-public class TransactionCategory {
+public class TransactionCategory implements UsersEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

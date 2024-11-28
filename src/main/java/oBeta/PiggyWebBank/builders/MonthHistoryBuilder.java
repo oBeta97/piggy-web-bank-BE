@@ -8,6 +8,7 @@ import oBeta.PiggyWebBank.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Component
@@ -55,7 +56,7 @@ public class MonthHistoryBuilder {
 
     private void setAvailable(){
         List<FixedTransaction> fixedTransactionList = this.fixedTransactionsService.getAllUserFixedTransactions(this.user);
-        List<Goal> goalList = this.goalsService.getGoalsByUser(this.user);
+        List<Goal> goalList = this.goalsService.getGoalsByUserNotExpired(this.user, LocalDate.now().withDayOfMonth(1));
 
         double availableCash = fixedTransactionList.stream().
                 mapToDouble(transaction -> transaction.getAmount() / transaction.getPeriod()).

@@ -40,8 +40,22 @@ public class MonthHistoriesService {
         return this.monthHistoriesRepo.findAll(pageable);
     }
 
+    public Page<MonthHistory> getAllMeMonthHistory(int page, int size, String sortBy, User user){
+        if(size > 50) size = 50;
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return this.monthHistoriesRepo.findByUser(user, pageable);
+    }
+
     public MonthHistory getMonthHistoryById (long idToFind){
         return this.monthHistoriesRepo.findById(idToFind)
+                .orElseThrow(() ->
+                        new NotFoundException("Month History with id " + idToFind + " not found!")
+                );
+    }
+
+    public MonthHistory getMonthHistoryByIdAndUser (long idToFind, User user){
+        return this.monthHistoriesRepo.findByIdAndUser(idToFind, user)
                 .orElseThrow(() ->
                         new NotFoundException("Month History with id " + idToFind + " not found!")
                 );
@@ -60,9 +74,13 @@ public class MonthHistoriesService {
         return this.monthHistoriesRepo.save(new MonthHistory(actualDate.getMonthValue(), actualDate.getYear(), user));
     }
 
+    public MonthHistory getLastMonthHistoryByUser (User user){
+        return this.monthHistoriesRepo.findFirstByUserOrderByIdDesc(user);
+    }
+
     public void reloadLastMonthHistoty(User user){
 
-        MonthHistory lastMonthHistory = this.monthHistoriesRepo.findFirstByUserOrderByIdDesc(user);
+        MonthHistory lastMonthHistory = this.getLastMonthHistoryByUser(user);
 
         // Cause of the flush of the save must be cloned the values
         double lastMonthHistoryAvailable = lastMonthHistory.getAvailable();

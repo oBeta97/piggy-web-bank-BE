@@ -1,23 +1,40 @@
 package oBeta.PiggyWebBank.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import oBeta.PiggyWebBank.exceptions.BadRequestException;
 import oBeta.PiggyWebBank.exceptions.NotAllowedException;
-import oBeta.PiggyWebBank.payloads.UserDTO;
+import oBeta.PiggyWebBank.payloads.signin.SigninDTO;
+import oBeta.PiggyWebBank.payloads.admin.UserDTO;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.GrantedAuthority;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
 @Data
 @NoArgsConstructor
-public class User {
+@JsonIgnoreProperties(
+        {
+            "authorities",
+            "enabled",
+            "accountNonExpired",
+            "accountNonLocked",
+            "credentialsNonExpired"
+        }
+)
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -34,10 +51,12 @@ public class User {
 
     @Column(nullable = false)
     @Setter(AccessLevel.NONE)
+    @JsonIgnore
     private String password;
 
     @Column(name = "last_password_update", nullable = false)
     @Setter(AccessLevel.NONE)
+    @JsonIgnore
     private LocalDate lastPasswordUpdate;
 
     @JsonIgnore
@@ -77,10 +96,20 @@ public class User {
         this.name = name;
     }
 
-    public User(UserDTO dto, Role role){
+    public User(UserDTO dto, String password, Role role){
         this.email = dto.email();
         this.username = dto.username();
-        this.password = dto.password();
+        this.password = password;
+        this.lastPasswordUpdate = LocalDate.now();
+        this.name = dto.name();
+        this.surname = dto.surname();
+        this.role = role;
+    }
+
+    public User(SigninDTO dto, String password, Role role){
+        this.email = dto.email();
+        this.username = dto.username();
+        this.password = password;
         this.lastPasswordUpdate = LocalDate.now();
         this.name = dto.name();
         this.surname = dto.surname();
@@ -89,11 +118,19 @@ public class User {
 
     public void setNewPassword(String _password){
 
-        // avoid to set the same password when updated
-        if(_password.equals(this.getPassword())) throw new NotAllowedException("The password must be different from the existing one");
-
         this.password = _password;
         this.lastPasswordUpdate = LocalDate.now();
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.role.
+                getFeatureList().
+                stream().
+                map(feature ->
+                        new SimpleGrantedAuthority(feature.getName())
+                ).
+                collect(Collectors.toList());
     }
 
 

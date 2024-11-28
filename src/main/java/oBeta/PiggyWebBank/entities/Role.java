@@ -22,11 +22,17 @@ public class Role {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @ManyToMany(mappedBy = "roleList", fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "roles_features",
+            joinColumns = @JoinColumn(name = "role_id"),
+            inverseJoinColumns = @JoinColumn(name = "feature_id")
+    )
     private List<Feature> featureList;
 
     public Role(String name, List<Feature> featureList) {
         this.name = name;
         this.featureList = featureList;
     }
+
 }

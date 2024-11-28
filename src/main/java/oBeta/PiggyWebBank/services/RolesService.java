@@ -4,7 +4,7 @@ import oBeta.PiggyWebBank.entities.Feature;
 import oBeta.PiggyWebBank.entities.Role;
 import oBeta.PiggyWebBank.exceptions.BadRequestException;
 import oBeta.PiggyWebBank.exceptions.NotFoundException;
-import oBeta.PiggyWebBank.payloads.RoleDTO;
+import oBeta.PiggyWebBank.payloads.developer.RoleDTO;
 import oBeta.PiggyWebBank.repositories.RolesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -37,6 +37,11 @@ public class RolesService {
                 .orElseThrow(() -> new NotFoundException("Role with id " + idToFind + " not found!" ));
     }
 
+    public Role getUserRole(){
+        return this.rolesRepo.findByName("USER")
+                .orElseThrow(() -> new NotFoundException("User role not found!"));
+    }
+
     public List<Role> getRolesByList(List<Long> idList){
 
         List<Role> res = new ArrayList<>();
@@ -56,8 +61,14 @@ public class RolesService {
                 });
 
         List<Feature> featureList = this.featuresService.getFeaturesByList(roleDTO.featureList());
+        Role role = new Role(roleDTO.name(), featureList);
 
-        return this.rolesRepo.save(new Role(roleDTO.name(), featureList));
+        for (Feature feature : featureList) {
+            feature.getRoleList().add(role);
+        }
+
+        return rolesRepo.save(role);
+
     }
 
     public Role updateRole (long idToUpdate, RoleDTO roleDTO){
@@ -77,15 +88,29 @@ public class RolesService {
 
         found.setName(roleDTO.name());
 
+        found.getFeatureList().forEach(feature -> feature.getRoleList().remove(found));
+
+        for (Feature feature : dtoFeatureList) {
+            feature.getRoleList().add(found);
+        }
         found.setFeatureList(dtoFeatureList);
 
         return this.rolesRepo.save(found);
     }
 
     public void deleteRole(long idToDelete){
-        this.rolesRepo.delete(
-                this.getRoleById(idToDelete)
-        );
+        Role roleToDelete = this.rolesRepo.findById(idToDelete)
+                .orElseThrow(() -> new NotFoundException("Role with id " + idToDelete + " not found!" ));
+
+        for (Feature feature : roleToDelete.getFeatureList()) {
+            feature.getRoleList().remove(roleToDelete);
+        }
+
+        roleToDelete.getFeatureList().clear();
+
+        this.rolesRepo.save(roleToDelete);
+
+        this.rolesRepo.delete(roleToDelete);
     }
 
     private boolean isFoundEqualsToDTO(Role found, RoleDTO featureDTO, List<Feature> dtoFeatureList){

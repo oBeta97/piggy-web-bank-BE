@@ -1,14 +1,11 @@
 package oBeta.PiggyWebBank.services;
 
-import oBeta.PiggyWebBank.entities.Feature;
-import oBeta.PiggyWebBank.entities.Role;
 import oBeta.PiggyWebBank.entities.TransactionCategory;
 import oBeta.PiggyWebBank.entities.User;
 import oBeta.PiggyWebBank.exceptions.BadRequestException;
 import oBeta.PiggyWebBank.exceptions.NotFoundException;
-import oBeta.PiggyWebBank.payloads.BaseTransactionCategoryDTO;
-import oBeta.PiggyWebBank.payloads.RoleDTO;
-import oBeta.PiggyWebBank.payloads.UserTransactionCategoryDTO;
+import oBeta.PiggyWebBank.payloads.admin.BaseTransactionCategoryDTO;
+import oBeta.PiggyWebBank.payloads.admin.UserTransactionCategoryDTO;
 import oBeta.PiggyWebBank.repositories.TransactionCategoriesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -47,6 +44,10 @@ public class TransactionCategoriesService {
 
     public List<TransactionCategory> getTransactionCategoryOfAnUser(User user){
         return this.transactionCategoriesRepo.findAllTransactionCategoryOfAnUser(user);
+    }
+
+    public List<TransactionCategory> getTransactionCategoryOfUserOnly(User user){
+        return this.transactionCategoriesRepo.findTransactionCategoryByUser(user);
     }
 
     // ONLY admin users can use this method
@@ -126,13 +127,19 @@ public class TransactionCategoriesService {
         this.transactionCategoriesRepo.delete(found);
     }
 
-//    TODO - togliere i commenti, sono predisposizioni per il controllo del JWT
-    public void deleteUserTransactionCategory(long idToDelete/*, User user*/){
+    public void deleteUserTransactionCategoryAdmin(long idToDelete/*, User user*/){
 //        User u = this.userService.getUserById(user.getId());
 
         TransactionCategory found = this.getTransactionCategoryById(idToDelete);
 
 //        if (u.getId() != found.getUser().getId()) throw new BadRequestException("Request error! Wrong user");
+
+        this.transactionCategoriesRepo.delete(found);
+    }
+
+
+    public void deleteUserTransactionCategory(long idToDelete, User user){
+        TransactionCategory found = this.getTransactionCategoryById(idToDelete);
 
         this.transactionCategoriesRepo.delete(found);
     }

@@ -1,21 +1,24 @@
 package oBeta.PiggyWebBank.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import oBeta.PiggyWebBank.payloads.GoalDTO;
+import oBeta.PiggyWebBank.interfaces.UsersEntity;
+import oBeta.PiggyWebBank.payloads.admin.GoalDTO;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.UUID;
 
 @Entity
 @Table(name = "goals")
 @Data
 @NoArgsConstructor
-public class Goal {
+public class Goal implements UsersEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +43,7 @@ public class Goal {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
 

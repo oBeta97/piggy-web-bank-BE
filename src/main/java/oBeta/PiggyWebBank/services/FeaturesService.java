@@ -4,7 +4,7 @@ import oBeta.PiggyWebBank.entities.Feature;
 import oBeta.PiggyWebBank.entities.Role;
 import oBeta.PiggyWebBank.exceptions.BadRequestException;
 import oBeta.PiggyWebBank.exceptions.NotFoundException;
-import oBeta.PiggyWebBank.payloads.FeatureDTO;
+import oBeta.PiggyWebBank.payloads.developer.FeatureDTO;
 import oBeta.PiggyWebBank.repositories.FeaturesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,11 +26,15 @@ public class FeaturesService {
     @Autowired
     private RolesService rolesService;
 
-    public Page<Feature> getAllFeatures(int page, int size, String sortBy) {
+    public Page<Feature> getPageOfAllFeatures(int page, int size, String sortBy) {
         if(size > 50) size = 50;
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         return this.featuresRepo.findAll(pageable);
+    }
+
+    public List<Feature> getAllFeatures(){
+        return this.featuresRepo.findAll();
     }
 
     public Feature getFeatureById (long idToFind){
@@ -58,9 +62,7 @@ public class FeaturesService {
                     throw new BadRequestException("Feature with name " + feature.getName() + " already exist!");
             });
 
-        List<Role> roleList = this.rolesService.getRolesByList(featureDTO.roleList());
-
-        return this.featuresRepo.save(new Feature(featureDTO.name(), roleList));
+        return this.featuresRepo.save(new Feature(featureDTO.name()));
     }
 
     public Feature updateFeature (long idToUpdate, FeatureDTO featureDTO){
@@ -74,29 +76,34 @@ public class FeaturesService {
             }
         );
 
-        List<Role> dtoRoleList = this.rolesService.getRolesByList(featureDTO.roleList());
-
         // if there's not changes the update won't be done
-        if(this.isFoundEqualsToDTO(found, featureDTO, dtoRoleList))
+        if(this.isFoundEqualsToDTO(found, featureDTO))
             return found;
 
-
         found.setName(featureDTO.name());
-        found.setRoleList(dtoRoleList);
 
         return this.featuresRepo.save(found);
     }
 
     public void deleteFeature (long idToDelete){
-        this.featuresRepo.delete(
-                this.getFeatureById(idToDelete)
-        );
+        Feature featureToDelete = this.featuresRepo.findById(idToDelete)
+                .orElseThrow(() ->
+                        new NotFoundException("Feature with id " + idToDelete + " not found!")
+                );
+
+        for (Role role : featureToDelete.getRoleList()) {
+            role.getFeatureList().remove(featureToDelete);
+        }
+
+        featureToDelete.getRoleList().clear();
+
+        this.featuresRepo.save(featureToDelete);
+
+        this.featuresRepo.delete(featureToDelete);
     }
 
-
-    private boolean isFoundEqualsToDTO(Feature found, FeatureDTO featureDTO, List<Role> dtoRoleList){
-        return found.getName().equals(featureDTO.name()) &&
-                found.getRoleList().equals(dtoRoleList);
+    private boolean isFoundEqualsToDTO(Feature found, FeatureDTO featureDTO){
+        return found.getName().equals(featureDTO.name());
     }
 
 }

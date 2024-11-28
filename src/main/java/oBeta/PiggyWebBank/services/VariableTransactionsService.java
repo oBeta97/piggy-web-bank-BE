@@ -5,7 +5,7 @@ import oBeta.PiggyWebBank.entities.VariableTransaction;
 import oBeta.PiggyWebBank.entities.User;
 import oBeta.PiggyWebBank.exceptions.BadRequestException;
 import oBeta.PiggyWebBank.exceptions.NotFoundException;
-import oBeta.PiggyWebBank.payloads.VariableTransactionDTO;
+import oBeta.PiggyWebBank.payloads.admin.VariableTransactionDTO;
 import oBeta.PiggyWebBank.repositories.VariableTransactionsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -37,6 +37,14 @@ public class VariableTransactionsService {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         return this.variableTransactionsRepo.findAll(pageable);
     }
+
+    public Page<VariableTransaction> getAllUserVariableTransactions(int page, int size, String sortBy, User user) {
+        if(size > 50) size = 50;
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return this.variableTransactionsRepo.findAllByUser(user, pageable);
+    }
+
 
     public VariableTransaction getVariableTransactionById(long idToFind){
         return this.variableTransactionsRepo.findById(idToFind)
@@ -95,7 +103,11 @@ public class VariableTransactionsService {
         found.setName(dto.name());
         found.setTransactionCategory(transactionCategory);
 
-        return this.variableTransactionsRepo.save(found);
+        VariableTransaction res =  this.variableTransactionsRepo.save(found);
+
+        monthHistoriesService.reloadLastMonthHistoty(res.getUser());
+
+        return res;
     }
 
     public void delteVariableTransaction(long idToDelete, User u){

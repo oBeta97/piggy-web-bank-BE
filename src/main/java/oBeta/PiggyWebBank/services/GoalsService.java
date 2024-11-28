@@ -4,7 +4,7 @@ import oBeta.PiggyWebBank.entities.Goal;
 import oBeta.PiggyWebBank.entities.User;
 import oBeta.PiggyWebBank.exceptions.BadRequestException;
 import oBeta.PiggyWebBank.exceptions.NotFoundException;
-import oBeta.PiggyWebBank.payloads.GoalDTO;
+import oBeta.PiggyWebBank.payloads.admin.GoalDTO;
 import oBeta.PiggyWebBank.repositories.GoalsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,13 +36,32 @@ public class GoalsService {
         return this.goalsRepo.findAll(pageable);
     }
 
+    public Page<Goal> getAllGoalsByUser(int page, int size, String sortBy, User user){
+        if(size > 50) size = 50;
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return this.goalsRepo.findByUser(user, pageable);
+    }
+
+    public Page<Goal> getAllGoalsNotExpiredByUser(int page, int size, String sortBy, User user){
+        if(size > 50) size = 50;
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return this.goalsRepo.findByUserNotExpired(user,LocalDate.now().withDayOfMonth(1) , pageable);
+    }
+
     public Goal getGoalById(long idToFind){
         return this.goalsRepo.findById(idToFind)
                 .orElseThrow(() -> new NotFoundException("Goal with id " + idToFind + " not found!" ));
     }
 
-    public List<Goal> getGoalsByUser(User user){
-        return this.goalsRepo.findByUser(user);
+    public Goal getGoalByIdAndUser(long idToFind, User user){
+        return this.goalsRepo.findByIdAndUser(idToFind, user)
+                .orElseThrow(() -> new NotFoundException("Goal with id " + idToFind + " not found!" ));
+    }
+
+    public List<Goal> getGoalsByUserNotExpired(User user, LocalDate expirityDt){
+        return this.goalsRepo.findByUserNotExpired(user, expirityDt);
     }
 
     public Goal saveNewGoal(GoalDTO dto){
@@ -78,8 +98,8 @@ public class GoalsService {
             return found;
 
         found.setName(dto.name());
-        found.setAmount(dto.amount());
         found.setExperityDt(dto.expirityDt());
+        found.setAmount(dto.amount());
 
         Goal res = this.goalsRepo.save(found);
 
