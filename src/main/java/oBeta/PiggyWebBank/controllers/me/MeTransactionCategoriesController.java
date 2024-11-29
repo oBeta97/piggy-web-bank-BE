@@ -10,6 +10,7 @@ import oBeta.PiggyWebBank.security.ValidationControl;
 import oBeta.PiggyWebBank.services.TransactionCategoriesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -19,6 +20,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/me/transaction-categories")
+@PreAuthorize("hasAnyAuthority(" +
+        "'me-transaction-category:CRUD'," +
+        "'me-transaction-category:C'" +
+        "'me-transaction-category:R'," +
+        "'me-transaction-category:U'," +
+        "'me-transaction-category:D'," +
+        ")"
+)
 public class MeTransactionCategoriesController {
 
     @Autowired
@@ -31,6 +40,7 @@ public class MeTransactionCategoriesController {
     private UserValidation userValidation;
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('me-transaction-category:CRUD', 'me-transaction-category:R')")
     public List<TransactionCategory> getMeTransactionCategories(
             @AuthenticationPrincipal User loggedUser,
             @RequestParam(defaultValue = "0") int page,
@@ -46,6 +56,7 @@ public class MeTransactionCategoriesController {
     }
 
     @GetMapping("/{transactionCategoryId}")
+    @PreAuthorize("hasAnyAuthority('me-transaction-category:CRUD', 'me-transaction-category:R')")
     public TransactionCategory getMeTransactionCategory(
             @AuthenticationPrincipal User loggedUser,
             @PathVariable long transactionCategoryId
@@ -58,6 +69,8 @@ public class MeTransactionCategoriesController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyAuthority('me-transaction-category:CRUD', 'me-transaction-category:C')")
     public TransactionCategory addMeTransactionCategory(
             @AuthenticationPrincipal User loggedUser,
             @RequestBody @Validated MeTransactionCategoryDTO body,
@@ -71,6 +84,7 @@ public class MeTransactionCategoriesController {
     }
 
     @PutMapping("/{transactionCategoryId}")
+    @PreAuthorize("hasAnyAuthority('me-transaction-category:CRUD', 'me-transaction-category:U')")
     public TransactionCategory updateMeTransactionCategory(
             @AuthenticationPrincipal User loggedUser,
             @PathVariable long transactionCategoryId,
@@ -91,6 +105,7 @@ public class MeTransactionCategoriesController {
 
     @DeleteMapping("/{transactionCategoryId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyAuthority('me-transaction-category:CRUD', 'me-transaction-category:D')")
     public void deleteMeTransactionCategory(
             @AuthenticationPrincipal User loggedUser,
             @PathVariable long transactionCategoryId

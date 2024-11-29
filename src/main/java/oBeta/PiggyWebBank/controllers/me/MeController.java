@@ -11,6 +11,7 @@ import oBeta.PiggyWebBank.services.UserCharacteristicsService;
 import oBeta.PiggyWebBank.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -18,6 +19,14 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/me")
+@PreAuthorize("hasAnyAuthority(" +
+        "'me:CRUD'," +
+        "'me:R'," +
+        "'me-role:R'," +
+        "'me-characteristic:R'," +
+        "'me:U'," +
+        ")"
+)
 public class MeController {
 
     @Autowired
@@ -30,16 +39,19 @@ public class MeController {
     private ValidationControl validationControl;
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('me:CRUD', 'me:R')")
     public User getMe(@AuthenticationPrincipal User loggedUser){
         return loggedUser;
     }
 
-    @GetMapping("/roles")
+    @GetMapping("/mes")
+    @PreAuthorize("hasAuthority('me-role:R')")
     public Role getMeRole(@AuthenticationPrincipal User loggedUser){
         return loggedUser.getRole();
     }
 
     @PutMapping
+    @PreAuthorize("hasAnyAuthority('me:CRUD', 'me:U')")
     public User updateMe(
             @AuthenticationPrincipal User loggedUser,
             @RequestBody @Validated MeUserDTO body,
@@ -52,6 +64,7 @@ public class MeController {
 
     @PatchMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyAuthority('me:CRUD', 'me:U')")
     public void updateMePassword(
             @AuthenticationPrincipal User loggedUser,
             @RequestBody @Validated UpdatePasswordDTO body,
@@ -63,6 +76,7 @@ public class MeController {
     }
 
     @GetMapping("/user-characteristics")
+    @PreAuthorize("hasAuthority('me-characteristic:R')")
     public UserCharacteristic getMeUserCharacteristics(@AuthenticationPrincipal User loggedUser){
         return this.userCharacteristicsService.getUserCharacteristicByUser(loggedUser);
     }

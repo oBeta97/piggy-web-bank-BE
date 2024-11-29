@@ -3,6 +3,7 @@ package oBeta.PiggyWebBank.exceptions;
 import oBeta.PiggyWebBank.payloads.ErrorsResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -30,11 +31,11 @@ public class ExceptionsHandler {
         return new ErrorsResponseDTO("401", ex.getMessage(), LocalDateTime.now());
     }
 
-//    @ExceptionHandler(AuthorizationDeniedException.class)
-//    @ResponseStatus(HttpStatus.FORBIDDEN)
-//    public ErrorsResponseDTO handleForbidden(AuthorizationDeniedException ex) {
-//        return new ErrorsResponseDTO("403", "Authorization Denied", LocalDateTime.now());
-//    }
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorsResponseDTO handleForbidden(AuthorizationDeniedException ex) {
+        return new ErrorsResponseDTO("403", "Authorization Denied", LocalDateTime.now());
+    }
 
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
