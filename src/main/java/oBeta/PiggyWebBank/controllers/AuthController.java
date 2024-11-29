@@ -39,6 +39,7 @@ public class AuthController {
     @Autowired
     private ValidationControl validationControl;
 
+
     @PostMapping("/login")
     public LoginResponseDTO login (@RequestBody @Validated LoginDTO body, BindingResult validationResult){
         this.validationControl.checkErrors(validationResult);
@@ -51,11 +52,7 @@ public class AuthController {
     @PostMapping("/signin")
     @ResponseStatus(HttpStatus.CREATED)
     public SigninResponseDTO signin(@RequestBody @Validated SigninDTO dto, BindingResult validationResult) {
-        if (validationResult.hasErrors()) {
-            String message = validationResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage())
-                    .collect(Collectors.joining(";"));
-            throw new BadRequestException(message);
-        }
+        this.validationControl.checkErrors(validationResult);
 
         User userInserted = this.userService.signin(dto);
 

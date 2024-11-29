@@ -9,6 +9,7 @@ import oBeta.PiggyWebBank.services.FixedTransactionsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -16,6 +17,14 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/me/fixed-transactions")
+@PreAuthorize("hasAnyAuthority(" +
+        "'me-fixed-transaction:CRUD'," +
+        "'me-fixed-transaction:C'" +
+        "'me-fixed-transaction:R'," +
+        "'me-fixed-transaction:U'," +
+        "'me-fixed-transaction:D'," +
+        ")"
+)
 public class MeFixedTransactionsController {
 
     @Autowired
@@ -28,6 +37,7 @@ public class MeFixedTransactionsController {
     private UserValidation userValidation;
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('me-fixed-transaction:CRUD', 'me-fixed-transaction:R')")
     public Page<FixedTransaction> getAllMeFixedTransaction(
             @AuthenticationPrincipal User loggedUser,
             @RequestParam(defaultValue = "0") int page,
@@ -38,6 +48,7 @@ public class MeFixedTransactionsController {
     }
 
     @GetMapping("/{fixedTransactionId}")
+    @PreAuthorize("hasAnyAuthority('me-fixed-transaction:CRUD', 'me-fixed-transaction:R')")
     public FixedTransaction getMeFixedTransactionById(@AuthenticationPrincipal User loggedUser, @PathVariable long fixedTransactionId){
         FixedTransaction res = this.fixedTransactionsService.getFixedTransactionById(fixedTransactionId);
 
@@ -46,7 +57,9 @@ public class MeFixedTransactionsController {
         return res;
     }
 
-    @PostMapping("")
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyAuthority('me-fixed-transaction:CRUD', 'me-fixed-transaction:C')")
     public FixedTransaction setMeFixedTransaction(
             @AuthenticationPrincipal User loggedUser,
             @RequestBody @Validated MeFixedTransactionDTO body,
@@ -58,6 +71,7 @@ public class MeFixedTransactionsController {
     }
 
     @PutMapping("/{fixedTransactionId}")
+    @PreAuthorize("hasAnyAuthority('me-fixed-transaction:CRUD', 'me-fixed-transaction:U')")
     public FixedTransaction updateMeFixedTransaction(
             @AuthenticationPrincipal User loggedUser,
             @RequestBody @Validated MeFixedTransactionDTO body,
@@ -71,6 +85,7 @@ public class MeFixedTransactionsController {
 
     @DeleteMapping("/{fixedTransactionId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyAuthority('me-fixed-transaction:CRUD', 'me-fixed-transaction:D')")
     public void deleteMeFixedTransaction(
             @AuthenticationPrincipal User loggedUser,
             @PathVariable long fixedTransactionId

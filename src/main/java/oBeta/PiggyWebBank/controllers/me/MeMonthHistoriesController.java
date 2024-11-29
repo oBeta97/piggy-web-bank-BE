@@ -6,11 +6,13 @@ import oBeta.PiggyWebBank.entities.User;
 import oBeta.PiggyWebBank.services.MonthHistoriesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/me/month-histories")
+@PreAuthorize("hasAuthority('me-mont-history:R')")
 public class MeMonthHistoriesController {
 
     @Autowired
