@@ -46,12 +46,12 @@ public class UsersController {
 
     @GetMapping
     @PreAuthorize("hasAnyAuthority('user:CRUD', 'user:R')")
-    public Page<User> getAllUsers(
+    public Page<User> getAllUsersPage(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy
     ){
-        return this.userService.getAllUsers(page, size, sortBy);
+        return this.userService.getAllUsersPage(page, size, sortBy);
     }
 
     @GetMapping("/{userId}")
