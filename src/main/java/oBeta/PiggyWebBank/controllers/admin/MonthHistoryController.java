@@ -5,6 +5,7 @@ import oBeta.PiggyWebBank.entities.MonthHistory;
 import oBeta.PiggyWebBank.services.MonthHistoriesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,6 +16,7 @@ public class MonthHistoryController {
     private MonthHistoriesService monthHistoriesService;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('goal:R')")
     public Page<MonthHistory> getAllMonthHistoriess(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -24,6 +26,7 @@ public class MonthHistoryController {
     }
 
     @GetMapping("/{monthHistoryId}")
+    @PreAuthorize("hasAuthority('goal:R')")
     public MonthHistory getMonthHistoryById(@PathVariable long monthHistoryId){
         return this.monthHistoriesService.getMonthHistoryById(monthHistoryId);
     }

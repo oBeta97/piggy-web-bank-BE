@@ -4,12 +4,14 @@ import oBeta.PiggyWebBank.entities.*;
 import oBeta.PiggyWebBank.entities.User;
 import oBeta.PiggyWebBank.exceptions.BadRequestException;
 import oBeta.PiggyWebBank.payloads.admin.UserDTO;
+import oBeta.PiggyWebBank.security.ValidationControl;
 import oBeta.PiggyWebBank.services.MonthHistoriesService;
 import oBeta.PiggyWebBank.services.UserCharacteristicsService;
 import oBeta.PiggyWebBank.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,15 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
+@PreAuthorize("hasAnyAuthority(" +
+        "'user:CRUD'," +
+        "'user:C'" +
+        "'user:R'," +
+        "'user-role:R'," +
+        "'user:U'," +
+        "'user:D'," +
+        ")"
+)
 public class UsersController {
 
     @Autowired
@@ -30,21 +41,27 @@ public class UsersController {
     @Autowired
     private UserCharacteristicsService userCharacteristicsService;
 
+    @Autowired
+    private ValidationControl validationControl;
+
     @GetMapping
-    public Page<User> getAllUsers(
+    @PreAuthorize("hasAnyAuthority('user:CRUD', 'user:R')")
+    public Page<User> getAllUsersPage(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy
     ){
-        return this.userService.getAllUsers(page, size, sortBy);
+        return this.userService.getAllUsersPage(page, size, sortBy);
     }
 
     @GetMapping("/{userId}")
+    @PreAuthorize("hasAnyAuthority('user:CRUD', 'user:R')")
     public User getUserById(@PathVariable UUID userId){
         return this.userService.getUserById(userId);
     }
 
     @GetMapping("/{userId}/role")
+    @PreAuthorize("hasAuthority('user-role:R')")
     public Role getUserRole(@PathVariable UUID userId){
         User u = this.userService.getUserById(userId);
         return u.getRole();
@@ -53,13 +70,9 @@ public class UsersController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    //ADMIN can create new users
+    @PreAuthorize("hasAnyAuthority('user:CRUD', 'user:C')")
     public User saveNewUser (@RequestBody @Validated UserDTO body, BindingResult validationResult){
-        if (validationResult.hasErrors()) {
-            String message = validationResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage())
-                    .collect(Collectors.joining(";"));
-            throw new BadRequestException(message);
-        }
+        this.validationControl.checkErrors(validationResult);
 
         User res = this.userService.saveNewUser(body);
 
@@ -71,20 +84,16 @@ public class UsersController {
 
 
     @PutMapping("/{userId}")
-    // USER can update a User!
+    @PreAuthorize("hasAnyAuthority('user:CRUD', 'user:U')")
     public User updateUser(@PathVariable UUID userId, @RequestBody @Validated UserDTO body, BindingResult validationResult){
-        if (validationResult.hasErrors()) {
-            String message = validationResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage())
-                    .collect(Collectors.joining(";"));
-            throw new BadRequestException(message);
-        }
+        this.validationControl.checkErrors(validationResult);
 
         return this.userService.updateUser(userId, body);
     }
 
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    // USER can delete a User!
+    @PreAuthorize("hasAnyAuthority('user:CRUD', 'user:D')")
     public void deleteUser(@PathVariable UUID userId){
         this.userService.deleteUser(userId);
     }

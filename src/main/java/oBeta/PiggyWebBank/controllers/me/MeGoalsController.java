@@ -10,6 +10,7 @@ import oBeta.PiggyWebBank.services.GoalsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -17,6 +18,14 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/me/goals")
+@PreAuthorize("hasAnyAuthority(" +
+        "'me-goal:CRUD'," +
+        "'me-goal:C'" +
+        "'me-goal:R'," +
+        "'me-goal:U'," +
+        "'me-goal:D'," +
+        ")"
+)
 public class MeGoalsController {
 
     @Autowired
@@ -29,6 +38,7 @@ public class MeGoalsController {
     private UserValidation userValidation;
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('me-goal:CRUD', 'me-goal:R')")
     public Page<Goal> getAllMeGoalsNotExpired (
             @AuthenticationPrincipal User loggedUser,
             @RequestParam(defaultValue = "0") int page,
@@ -44,6 +54,7 @@ public class MeGoalsController {
 
 
     @GetMapping("/{goalId}")
+    @PreAuthorize("hasAnyAuthority('me-goal:CRUD', 'me-goal:R')")
     public Goal getMeGoalById(
             @AuthenticationPrincipal User loggedUser,
             @PathVariable long goalId
@@ -52,6 +63,8 @@ public class MeGoalsController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyAuthority('me-goal:CRUD', 'me-goal:C')")
     public Goal addMeGoal(
             @AuthenticationPrincipal User loggedUser,
             @RequestBody @Validated MeGoalDTO body,
@@ -65,6 +78,7 @@ public class MeGoalsController {
     }
 
     @PutMapping("/{goalId}")
+    @PreAuthorize("hasAnyAuthority('me-goal:CRUD', 'me-goal:U')")
     public Goal updateMeGoal(
             @AuthenticationPrincipal User loggedUser,
             @PathVariable long goalId,
@@ -85,6 +99,7 @@ public class MeGoalsController {
 
     @DeleteMapping("/{goalId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyAuthority('me-goal:CRUD', 'me-goal:D')")
     public void deleteMeGoal(
             @AuthenticationPrincipal User loggedUser,
             @PathVariable long goalId

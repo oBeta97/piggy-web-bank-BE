@@ -11,6 +11,7 @@ import oBeta.PiggyWebBank.services.VariableTransactionsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -18,6 +19,14 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/me/variable-transactions")
+@PreAuthorize("hasAnyAuthority(" +
+        "'me-variable-transaction:CRUD'," +
+        "'me-variable-transaction:C'" +
+        "'me-variable-transaction:R'," +
+        "'me-variable-transaction:U'," +
+        "'me-variable-transaction:D'," +
+        ")"
+)
 public class MeVariableTransactionsController {
 
     @Autowired
@@ -30,6 +39,7 @@ public class MeVariableTransactionsController {
     private VariableTransactionsService variableTransactionsService;
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('me-variable-transaction:CRUD', 'me-variable-transaction:R')")
     public Page<VariableTransaction> getAllMeVariableTransasctions(
             @AuthenticationPrincipal User loggedUser,
             @RequestParam(defaultValue = "0") int page,
@@ -40,6 +50,7 @@ public class MeVariableTransactionsController {
     }
 
     @GetMapping("/{variableTransactionId}")
+    @PreAuthorize("hasAnyAuthority('me-variable-transaction:CRUD', 'me-variable-transaction:R')")
     public VariableTransaction getMeVariableTransaction(
             @AuthenticationPrincipal User loggedUser,
             @PathVariable long variableTransactionId
@@ -52,6 +63,8 @@ public class MeVariableTransactionsController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyAuthority('me-variable-transaction:CRUD', 'me-variable-transaction:C')")
     public VariableTransaction addMeVariableTransaction(
             @AuthenticationPrincipal User loggedUser,
             @RequestBody @Validated MeVariableTransactionDTO body,
@@ -66,6 +79,7 @@ public class MeVariableTransactionsController {
 
 
     @PutMapping("/{variableTransactionId}")
+    @PreAuthorize("hasAnyAuthority('me-variable-transaction:CRUD', 'me-variable-transaction:U')")
     public VariableTransaction updateMeVariableTransaction(
             @AuthenticationPrincipal User loggedUser,
             @PathVariable long variableTransactionId,
@@ -87,6 +101,7 @@ public class MeVariableTransactionsController {
 
     @DeleteMapping("/{variableTransactionId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyAuthority('me-variable-transaction:CRUD', 'me-variable-transaction:D')")
     public void deleteMeVariableTransaction(
             @AuthenticationPrincipal User loggedUser,
             @PathVariable long variableTransactionId

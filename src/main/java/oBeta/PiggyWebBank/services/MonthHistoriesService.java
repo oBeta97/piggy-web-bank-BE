@@ -95,7 +95,7 @@ public class MonthHistoriesService {
             this.userCharacteristicsService.updateUserCharacteristicDailyAmount(user,updatedMonth.getAvailable());
 
         if(updatedMonth.getSavings() != lastMonthHistorySavings)
-            this.userCharacteristicsService.updatUserCharacteristicTodayAmount(user, updatedMonth.getEarnings() + updatedMonth.getExpenses());
+            this.userCharacteristicsService.updateUserCharacteristicTodayAmount(user, updatedMonth.getEarnings() + updatedMonth.getExpenses());
     }
 
     // DELETE of the older data than a specific date

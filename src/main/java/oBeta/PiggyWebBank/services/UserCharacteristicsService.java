@@ -90,7 +90,7 @@ public class UserCharacteristicsService {
         return this.userCharacteristicsRepo.save(found);
     }
 
-    public UserCharacteristic updatUserCharacteristicTodayAmount(User user, double summedTransaction){
+    public UserCharacteristic updateUserCharacteristicTodayAmount(User user, double summedTransaction){
         User u = this.userService.getUserById(user.getId());
 
         UserCharacteristic found = this.getUserCharacteristicByUser(u);
@@ -98,8 +98,12 @@ public class UserCharacteristicsService {
         found.setTodayAmount(summedTransaction + found.getDailyAmount() * LocalDate.now().getDayOfMonth());
 
         return this.userCharacteristicsRepo.save(found);
-
     }
+
+    public void updateAllTodayAmount(){
+        this.userCharacteristicsRepo.updateAllTodayAmount();
+    }
+
 
     // This method will be run ONLY when a user will be deleted!
     public void deleteUserCharacteristic (User user){
