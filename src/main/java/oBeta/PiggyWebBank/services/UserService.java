@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -31,11 +32,15 @@ public class UserService {
     @Autowired
     private PasswordEncoder bcrypt;
 
-    public Page<User> getAllUsers(int page, int size, String sortBy){
+    public Page<User> getAllUsersPage(int page, int size, String sortBy){
         if(size > 50) size = 50;
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         return this.usersRepo.findAll(pageable);
+    }
+
+    public List<User> getAllUsers(){
+        return this.usersRepo.findAll();
     }
 
     public User getUserById (UUID idToFind){
