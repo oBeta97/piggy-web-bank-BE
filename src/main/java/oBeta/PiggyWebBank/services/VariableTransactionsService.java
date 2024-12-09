@@ -73,11 +73,11 @@ public class VariableTransactionsService {
 
         TransactionCategory transactionCategory = this.transactionCategoriesService.getTransactionCategoryById(dto.transactionCategory_id());
 
-        if (transactionCategory.getIsExpense() && dto.amount() > 0)
-            throw new BadRequestException("Expenses must be negative!");
+        if (transactionCategory.getIsExpense() && dto.amount() >= 0)
+            throw new BadRequestException("Expenses amount must be negative!");
 
-        if (!transactionCategory.getIsExpense() && dto.amount() < 0)
-            throw new BadRequestException("Earning must be positive!");
+        if (!transactionCategory.getIsExpense() && dto.amount() <= 0)
+            throw new BadRequestException("Earning amount must be positive!");
 
         VariableTransaction res = this.variableTransactionsRepo.save(
                 new VariableTransaction(dto, transactionCategory, user)

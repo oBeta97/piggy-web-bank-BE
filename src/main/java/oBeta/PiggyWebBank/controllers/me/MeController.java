@@ -44,7 +44,7 @@ public class MeController {
         return loggedUser;
     }
 
-    @GetMapping("/mes")
+    @GetMapping("/roles")
     @PreAuthorize("hasAuthority('me-role:R')")
     public Role getMeRole(@AuthenticationPrincipal User loggedUser){
         return loggedUser.getRole();
