@@ -21,4 +21,10 @@ public interface VariableTransactionsRepository extends JpaRepository<VariableTr
 
     Page<VariableTransaction> findAllByUser(User user, Pageable pageable);
 
+    List<VariableTransaction> findAllByUser(User user);
+
+    @Query("SELECT vt FROM VariableTransaction vt WHERE vt.user = :user AND MONTH(vt.transactionDt) = MONTH(CURRENT_DATE) AND YEAR(vt.transactionDt) = YEAR(CURRENT_DATE)")
+    List<VariableTransaction> findAllOfThisMonth(User user);
+
+
 }

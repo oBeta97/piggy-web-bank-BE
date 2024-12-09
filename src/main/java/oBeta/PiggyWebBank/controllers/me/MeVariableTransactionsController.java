@@ -17,6 +17,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/me/variable-transactions")
 @PreAuthorize("hasAnyAuthority(" +
@@ -40,13 +42,22 @@ public class MeVariableTransactionsController {
 
     @GetMapping
     @PreAuthorize("hasAnyAuthority('me-variable-transaction:CRUD', 'me-variable-transaction:R')")
-    public Page<VariableTransaction> getAllMeVariableTransasctions(
+    public Page<VariableTransaction> getAllMeVariableTransasctionsPaged(
             @AuthenticationPrincipal User loggedUser,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy
     ){
-        return this.variableTransactionsService.getAllUserVariableTransactions(page, size, sortBy, loggedUser);
+        return this.variableTransactionsService.getAllUserVariableTransactionsPaged(page, size, sortBy, loggedUser);
+    }
+
+    @GetMapping("/all")
+    @PreAuthorize("hasAnyAuthority('me-variable-transaction:CRUD', 'me-variable-transaction:R')")
+    public List<VariableTransaction> getAllMeVariableTransasctions(
+            @AuthenticationPrincipal User loggedUser,
+            @RequestParam(defaultValue = "false") boolean ofThisMonth
+    ){
+        return this.variableTransactionsService.getAllUserVariableTransactions(loggedUser,ofThisMonth);
     }
 
     @GetMapping("/{variableTransactionId}")
