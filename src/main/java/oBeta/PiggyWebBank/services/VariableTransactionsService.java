@@ -38,11 +38,18 @@ public class VariableTransactionsService {
         return this.variableTransactionsRepo.findAll(pageable);
     }
 
-    public Page<VariableTransaction> getAllUserVariableTransactions(int page, int size, String sortBy, User user) {
+    public Page<VariableTransaction> getAllUserVariableTransactionsPaged(int page, int size, String sortBy, User user) {
         if(size > 50) size = 50;
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         return this.variableTransactionsRepo.findAllByUser(user, pageable);
+    }
+
+    public List<VariableTransaction> getAllUserVariableTransactions(User user, boolean ofThisMonth) {
+
+        return ofThisMonth ?
+                this.variableTransactionsRepo.findAllOfThisMonth(user):
+                this.variableTransactionsRepo.findAllByUser(user);
     }
 
 
