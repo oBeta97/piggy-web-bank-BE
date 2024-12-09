@@ -5,5 +5,6 @@ import java.time.LocalDateTime;
 public record ErrorsResponseDTO(
         String errorCode,
         String message,
-        LocalDateTime dt) {
+        LocalDateTime dt
+) {
 }

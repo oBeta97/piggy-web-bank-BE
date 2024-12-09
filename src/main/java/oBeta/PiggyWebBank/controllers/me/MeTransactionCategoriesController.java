@@ -43,9 +43,6 @@ public class MeTransactionCategoriesController {
     @PreAuthorize("hasAnyAuthority('me-transaction-category:CRUD', 'me-transaction-category:R')")
     public List<TransactionCategory> getMeTransactionCategories(
             @AuthenticationPrincipal User loggedUser,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "false") boolean usersCategoriesOnly
     ){
 
