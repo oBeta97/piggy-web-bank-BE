@@ -12,8 +12,8 @@ public record MeVariableTransactionDTO(
         String name,
         @NotNull(message = "Amount must be set!")
         double amount,
-        @NotNull(message = "Transaction dt must be set!")
-        @PastOrPresent(message = "Transaction can't be in the future")
+        @NotNull(message = "Transaction date time must be set!")
+        @PastOrPresent(message = "Transaction date time can't be in the future")
         LocalDateTime transactionDt,
         @NotNull(message = "Transaction category Id must be set!")
         long transactionCategory_id

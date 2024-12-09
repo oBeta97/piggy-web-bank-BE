@@ -25,7 +25,7 @@ public class AuthService {
         User loggedUser = this.userService.getUserByUsername(dto.username());
 
         if(!bcrypt.matches(dto.password(), loggedUser.getPassword()))
-            throw new UnauthorizedException("Wrong Credentials!");
+            throw new UnauthorizedException("Wrong password!");
 
         return jwt.createToken(loggedUser);
     }

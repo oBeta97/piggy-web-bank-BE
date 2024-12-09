@@ -15,7 +15,8 @@ public interface UserCharacteristicsRepository extends JpaRepository<UserCharact
     Optional<UserCharacteristic> findByUser(User user);
 
     @Modifying
-    @Query("UPDATE uc SET uc.todayAmount = uc.todayAmount + uc.dailyAmount FROM UserCharacteristic uc")
+    @Query("UPDATE UserCharacteristic uc SET uc.todayAmount = uc.todayAmount + uc.dailyAmount")
     int updateAllTodayAmount();
+
 
 }
