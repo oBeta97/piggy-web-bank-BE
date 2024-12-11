@@ -120,7 +120,7 @@ public class VariableTransactionsService {
     public void delteVariableTransaction(long idToDelete, User u){
         VariableTransaction found = this.getVariableTransactionById(idToDelete);
 
-        if(found.getUser().getId() != u.getId()) throw new BadRequestException("Request error! Wrong user");
+        if(!found.getUser().getId().equals(u.getId())) throw new BadRequestException("Request error! Wrong user");
 
         this.variableTransactionsRepo.delete(found);
     }

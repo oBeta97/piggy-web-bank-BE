@@ -45,11 +45,12 @@ public class MeTransactionCategoriesController {
             @AuthenticationPrincipal User loggedUser,
             @RequestParam(defaultValue = "false") boolean usersCategoriesOnly
     ){
-
         if (usersCategoriesOnly)
             return this.transactionCategoriesService.getTransactionCategoryOfUserOnly(loggedUser);
 
-        return this.transactionCategoriesService.getTransactionCategoryOfAnUser(loggedUser);
+        List<TransactionCategory> res = this.transactionCategoriesService.getTransactionCategoryOfAnUser(loggedUser);
+
+        return res;
     }
 
     @GetMapping("/{transactionCategoryId}")

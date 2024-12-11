@@ -35,7 +35,6 @@ public class VariableTransactionsController {
     private ValidationControl validationControl;
 
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('variable-transaction:CRUD', 'variable-transaction:R')")
     public Page<VariableTransaction> getAllVariableTransactions(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
