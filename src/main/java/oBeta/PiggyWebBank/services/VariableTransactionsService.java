@@ -123,6 +123,9 @@ public class VariableTransactionsService {
         if(!found.getUser().getId().equals(u.getId())) throw new BadRequestException("Request error! Wrong user");
 
         this.variableTransactionsRepo.delete(found);
+
+        monthHistoriesService.reloadLastMonthHistoty(u);
+
     }
 
     private boolean isFoundEqualsToDTO (VariableTransaction found, VariableTransactionDTO dto) {
