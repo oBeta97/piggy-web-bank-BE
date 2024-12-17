@@ -1,6 +1,7 @@
 package oBeta.PiggyWebBank.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -26,6 +27,7 @@ public class TransactionCategory implements UsersEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = true)
+    @JsonIgnore
     private User user;
 
     @Column(name = "is_expense", nullable = false)
