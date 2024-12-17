@@ -5,6 +5,7 @@ import oBeta.PiggyWebBank.entities.Role;
 import oBeta.PiggyWebBank.entities.User;
 import oBeta.PiggyWebBank.entities.UserCharacteristic;
 import oBeta.PiggyWebBank.payloads.me.MeUserDTO;
+import oBeta.PiggyWebBank.payloads.me.UpdateMeMinimumSavingsDTO;
 import oBeta.PiggyWebBank.payloads.me.UpdatePasswordDTO;
 import oBeta.PiggyWebBank.security.ValidationControl;
 import oBeta.PiggyWebBank.services.UserCharacteristicsService;
@@ -74,6 +75,20 @@ public class MeController {
 
         this.userService.updatePassword(body.password(), loggedUser);
     }
+
+    @PatchMapping("/minimum-savings")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyAuthority('me:CRUD', 'me:U')")
+    public void updateMeMinimumSavings(
+            @AuthenticationPrincipal User loggedUser,
+            @RequestBody @Validated UpdateMeMinimumSavingsDTO body,
+            BindingResult validationResult
+    ){
+        this.validationControl.checkErrors(validationResult);
+
+        this.userCharacteristicsService.updateMinimumSavings(body.minimumSavings(), loggedUser);
+    }
+
 
     @GetMapping("/user-characteristics")
     @PreAuthorize("hasAuthority('me-characteristic:R')")

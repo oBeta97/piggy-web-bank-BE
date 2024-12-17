@@ -53,6 +53,16 @@ public class UserCharacteristicsService {
         );
     }
 
+    public void updateMinimumSavings(double newMinimumSavings, User user){
+
+        UserCharacteristic uc = user.getUserCharacteristic();
+
+        uc.setMinimumSavings(newMinimumSavings);
+
+        this.userCharacteristicsRepo.save(uc);
+    }
+
+
     public UserCharacteristic updateUserCharacteristic(UserCharacteristicDTO dto){
 
         User user;

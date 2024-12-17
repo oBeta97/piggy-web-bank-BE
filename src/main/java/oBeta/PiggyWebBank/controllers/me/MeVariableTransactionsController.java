@@ -122,7 +122,6 @@ public class MeVariableTransactionsController {
         this.userValidation.validateUser(loggedUser, vt, VariableTransaction.class, variableTransactionId);
 
         this.variableTransactionsService.delteVariableTransaction(variableTransactionId, loggedUser);
-
     }
 
 }

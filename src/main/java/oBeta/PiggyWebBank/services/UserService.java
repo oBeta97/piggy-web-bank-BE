@@ -2,6 +2,7 @@ package oBeta.PiggyWebBank.services;
 
 import oBeta.PiggyWebBank.entities.Role;
 import oBeta.PiggyWebBank.entities.User;
+import oBeta.PiggyWebBank.entities.UserCharacteristic;
 import oBeta.PiggyWebBank.exceptions.BadRequestException;
 import oBeta.PiggyWebBank.exceptions.NotFoundException;
 import oBeta.PiggyWebBank.payloads.me.MeUserDTO;
@@ -31,6 +32,7 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder bcrypt;
+
 
     public Page<User> getAllUsersPage(int page, int size, String sortBy){
         if(size > 50) size = 50;
@@ -121,6 +123,7 @@ public class UserService {
         found.setRole(
                 this.rolesService.getRoleById(dto.role_id())
         );
+        found.setNewPassword(bcrypt.encode(dto.password()));
 
         return this.usersRepo.save(found);
     }
@@ -158,11 +161,9 @@ public class UserService {
         if(bcrypt.matches(newPassword, user.getPassword()))
             throw new BadRequestException("The password must be different from the existing one");
 
-        user.setNewPassword(newPassword);
-
+        user.setNewPassword(bcrypt.encode(newPassword));
         this.usersRepo.save(user);
     }
-
 
     public void deleteUser (UUID idToDelete){
         this.usersRepo.delete(
@@ -175,7 +176,8 @@ public class UserService {
                 found.getSurname().equals(dto.surname()) &&
                 found.getUsername().equals(dto.username()) &&
                 found.getEmail().equals(dto.email()) &&
-                found.getRole().getId() == dto.role_id();
+                found.getRole().getId() == dto.role_id() &&
+                bcrypt.matches(dto.password(), found.getPassword());
     }
 
     private boolean isFoundEqualsToDTO (User found, MeUserDTO dto) {

@@ -15,6 +15,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/me/fixed-transactions")
 @PreAuthorize("hasAnyAuthority(" +
@@ -45,6 +47,22 @@ public class MeFixedTransactionsController {
             @RequestParam(defaultValue = "id") String sortBy
     ){
         return this.fixedTransactionsService.getAllFixedTransactionsPagesByUser(loggedUser, page, size, sortBy);
+    }
+
+    @GetMapping("/incomes")
+    @PreAuthorize("hasAnyAuthority('me-fixed-transaction:CRUD', 'me-fixed-transaction:R')")
+    public List<FixedTransaction> getAllMeFixedIncomes(
+            @AuthenticationPrincipal User loggedUser
+    ){
+        return this.fixedTransactionsService.getFixedEarningsByUser(loggedUser);
+    }
+
+    @GetMapping("/expenses")
+    @PreAuthorize("hasAnyAuthority('me-fixed-transaction:CRUD', 'me-fixed-transaction:R')")
+    public List<FixedTransaction> getAllMeFixedExpenses(
+            @AuthenticationPrincipal User loggedUser
+    ){
+        return this.fixedTransactionsService.getFixedExpensesByUSer(loggedUser);
     }
 
     @GetMapping("/{fixedTransactionId}")
